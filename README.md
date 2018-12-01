@@ -6,3 +6,19 @@ Tested on Ubuntu 18.04 with python 2.7.15rc1.
 
 To use, install vlc using 'sudo apt install vlc'.
 Then install python-vlc using 'pip install python-vlc'
+
+The player assumes the following music organization:
+
+$HOME/Music/
+├── ChaCha
+├── Foxtrot
+├── Jive
+├── LineDance
+├── PasoDoble
+├── QuickStep
+├── Rumba
+├── Samba
+├── Tango
+├── VienneseWaltz
+├── Waltz
+└── WCS
