@@ -9,6 +9,7 @@ Then install python-vlc using 'pip install python-vlc'
 
 The player assumes the following music organization:
 
+<pre>
 $HOME/Music/
 ├── ChaCha
 ├── Foxtrot
@@ -22,3 +23,4 @@ $HOME/Music/
 ├── VienneseWaltz
 ├── Waltz
 └── WCS
+</pre>
