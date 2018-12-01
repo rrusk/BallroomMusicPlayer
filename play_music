@@ -24,6 +24,7 @@ import time
 import random
 from os import walk
 from os.path import expanduser
+from pyfiglet import Figlet
 import vlc
 
 def randomList(a):
@@ -34,6 +35,8 @@ def randomList(a):
         b.append(element)
     return b
 
+fig = Figlet(font='standard')
+
 home = expanduser("~")
 musicDir=home+"/Music/"
 
@@ -42,7 +45,8 @@ dances = ["Waltz","Tango","VienneseWaltz","QuickStep","WCS","ChaCha","Samba","Ru
 
 for idx in range(len(dances)):
   dance=dances[idx]
-  print "\t\t*** "+dance.upper()+" ***"
+  #print "\t\t*** "+dance.upper()+" ***"
+  print fig.renderText(dance)
   musicPath=musicDir+dance
   playlist=[]
   for (dirpath, dirnames, filenames) in walk(musicPath):
