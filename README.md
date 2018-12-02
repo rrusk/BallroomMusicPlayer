@@ -1,13 +1,20 @@
 # BallroomMusicPlayer
 
-A simple Ballroom Dance media player based on libvlc:
-https://wiki.videolan.org/python_bindings.
+A simple Ballroom Dance media player written in Python and based on
+libvlc: https://wiki.videolan.org/python_bindings.  The Python
+bindings API documentation is at
+https://www.olivieraubert.net/vlc/python-ctypes/doc/.
 
-Tested on Ubuntu 18.04 with python 2.7.15rc1.
+Tested on Ubuntu 18.04, 14.04 and Windows 10 with python 2.7.15.
 
-To use, install vlc using 'sudo apt install vlc'.
-Then install python-vlc using 'pip install python-vlc'.
-FIGlet is used for dance banners, install pyfiglet using `pip install pyfiglet'.
+If using Ubuntu, install vlc using 'sudo apt install vlc'.  Then
+install python-vlc using 'pip install python-vlc'.  FIGlet is used for
+dance banners; install pyfiglet using `pip install pyfiglet'.
+
+If using Windows, install the latest Python 2 release from
+https://www.python.org/downloads/windows/.  Then open a Command Prompt
+window and enter "pip install python-vlc" and "pip install pyfiglet".
+The program can then be ran using "python play_music".
 
 The player assumes the following music organization:
 <pre>
