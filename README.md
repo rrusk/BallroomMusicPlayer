@@ -34,5 +34,5 @@ be normalized.
 TODO:
 Port to Windows
 Implement GUI
-Add controls to go to next select, delete selection, quit, etc.
+Add controls to pause, restart, go to next select, delete selection, quit, etc.
 </pre>
