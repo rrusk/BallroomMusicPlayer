@@ -49,14 +49,16 @@ def displayInfo(player):
     artist=media.get_meta(vlc.Meta.Artist) or "Unknown artist"
     title=media.get_meta(vlc.Meta.Title) or "Unknown song; title"
     album=media.get_meta(vlc.Meta.Album) or "Unknown album"
-    return title+"-"+artist+"-"+album
+    info = title+"-"+artist+"-"+album
+    return info.encode('ascii','ignore')
 
 def play_music(numSel):
     numSel = numSel
     home = expanduser("~")
     musicDir=home+"/Music/"
 
-    #dances = ["QuickStep","PasoDoble","Jive"]
+#    dances = ["PasoDoble","Jive"]
+#    dances = ["QuickStep","PasoDoble","Jive"]
     dances = ["Waltz","Tango","VienneseWaltz","QuickStep","WCS","ChaCha","Samba","Rumba","PasoDoble","Jive"]
 
     fig = Figlet(font='standard')
@@ -89,8 +91,16 @@ def play_music(numSel):
                 player.audio_set_volume(level)
                 time.sleep(1)
             player.stop()
-            time.sleep(5)
-            cnt = numSel-1 # play only one Paso Doble
+            #time.sleep(5)
+            try:
+                skipYN = raw_input("Skip Paso Doble <Y/N>: ")
+                if skipYN == 'Y' or skipYN == 'y':
+                    cnt = numSel
+                else:
+                    cnt = numSel-1 # play only one Paso Doble
+            except Exception:
+                print("Exception reading input.")
+                continue
         else:
             cnt = 0
         rplaylist=randomList(playlist)
@@ -116,18 +126,26 @@ def play_music(numSel):
                     break
 
 if __name__=='__main__':
-    if len(sys.argv) > 2:
-        print "Script to play dance music for practice"
-        print "Usage: "+sys.argv[0]+" [number]"
-        print "  [number] is musical selections per dance."
-        print "  Default is 2 if no argument provided."
-        exit(1)
-    elif len(sys.argv) == 2:
-        if not is_intString(sys.argv[1]):
-            print "The number of musical selection per dance must be an integer."
+    try:
+        if len(sys.argv) > 2:
+            print "Script to play dance music for practice"
+            print "Usage: "+sys.argv[0]+" [number]"
+            print "  [number] is musical selections per dance."
+            print "  Default is 2 if no argument provided."
             exit(1)
-        numSel = int(sys.argv[1])
-    else:
-        numSel = 2
+        elif len(sys.argv) == 2:
+            if not is_intString(sys.argv[1]):
+                print "The number of musical selection per dance must be an integer."
+                exit(1)
+            numSel = int(sys.argv[1])
+        else:
+            numSel = 2
 
-    play_music(numSel)
+        play_music(numSel)
+    except Exception:
+        import sys
+        print sys.exc_info()[0]
+        import traceback
+        print traceback.format_exc()
+        print "Press Enter to continue ..." 
+        raw_input() 
