@@ -20,12 +20,34 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+import sys
 import time
 import random
 from os import walk
 from os.path import expanduser
 from pyfiglet import Figlet
 import vlc
+
+def is_intString(s):
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False
+    
+if len(sys.argv) > 2:
+    print "Script to play dance music for practice"
+    print "Usage: "+sys.argv[0]+" [number]"
+    print "  [number] is musical selections per dance."
+    print "  Default is 2 if no argument provided."
+    exit(1)
+elif len(sys.argv) == 2:
+    if not is_intString(sys.argv[1]):
+        print "The number of musical selection per dance must be an integer."
+        exit(1)
+    numSel = int(sys.argv[1])
+else:
+    numSel = 2
 
 def randomList(a):
     b=[]
@@ -35,14 +57,13 @@ def randomList(a):
         b.append(element)
     return b
 
-fig = Figlet(font='standard')
-
 home = expanduser("~")
 musicDir=home+"/Music/"
 
-#dances = ["PasoDoble","Jive"]
+#dances = ["QuickStep","PasoDoble","Jive"]
 dances = ["Waltz","Tango","VienneseWaltz","QuickStep","WCS","ChaCha","Samba","Rumba","PasoDoble","Jive"]
 
+fig = Figlet(font='standard')
 for idx in range(len(dances)):
   dance=dances[idx]
   #print "\t\t*** "+dance.upper()+" ***"
@@ -68,13 +89,13 @@ for idx in range(len(dances)):
           time.sleep(1)
       player.stop()
       time.sleep(5)
-      cnt = 1
+      cnt = numSel-1 # play only one Paso Doble
   else:
       cnt = 0
   rplaylist=randomList(playlist)
   for song in rplaylist:
     cnt = cnt + 1
-    if cnt > 2:
+    if cnt > numSel:
         break
     print(song)
     nextsong=dirpath+"/"+song
