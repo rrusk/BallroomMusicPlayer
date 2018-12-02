@@ -57,6 +57,14 @@ def randomList(a):
         b.append(element)
     return b
 
+def displayInfo(player):
+    media=player.get_media()
+    media.parse()
+    artist=media.get_meta(vlc.Meta.Artist) or "Unknown artist"
+    title=media.get_meta(vlc.Meta.Title) or "Unknown song; title"
+    album=media.get_meta(vlc.Meta.Album) or "Unknown album"
+    return title+"-"+artist+"-"+album
+
 home = expanduser("~")
 musicDir=home+"/Music/"
 
@@ -81,7 +89,12 @@ for idx in range(len(dances)):
       nextsong=dirpath+"/"+song
       player=vlc.MediaPlayer(nextsong)
       player.audio_set_volume(100)
-      print(song)
+      infoStr = displayInfo(player)
+      if "Unknown" not in infoStr:
+        print(infoStr)
+      else:
+        print(infoStr)
+        #print("Filename: "+song)
       player.play()
       time.sleep(17)
       for level in range(100,10,-10):
@@ -97,10 +110,15 @@ for idx in range(len(dances)):
     cnt = cnt + 1
     if cnt > numSel:
         break
-    print(song)
     nextsong=dirpath+"/"+song
     player=vlc.MediaPlayer(nextsong)
     player.audio_set_volume(100)
+    infoStr = displayInfo(player)
+    if "Unknown" not in infoStr:
+      print(infoStr)
+    else:
+      print(infoStr)
+      #print("Filename: "+song)
     player.play()
     time.sleep(1)
     while True:
