@@ -25,3 +25,12 @@ $HOME/Music/
 ├── Waltz
 └── WCS
 </pre>
+
+The musical selections are assumed to be at the correct tempo and to
+be of appropriate length.  The volume of the musical selections should
+be normalized.
+
+TODO:
+Port to Windows
+Implement GUI
+Add controls to go to next select, delete selection, quit, etc.
