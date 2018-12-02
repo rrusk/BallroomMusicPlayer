@@ -11,10 +11,13 @@ If using Ubuntu, install vlc using 'sudo apt install vlc'.  Then
 install python-vlc using 'pip install python-vlc'.  FIGlet is used for
 dance banners; install pyfiglet using `pip install pyfiglet'.
 
-If using Windows, install the latest Python 2 release from
-https://www.python.org/downloads/windows/.  Then open a Command Prompt
-window and enter "pip install python-vlc" and "pip install pyfiglet".
-The program can then be ran using "python play_music".
+If using Windows, install VLC from https://www.videolan.org/vlc/ and
+the latest Python 2 release from
+https://www.python.org/downloads/windows/.  Make sure Python is added
+to your path during installation.  Then open a Command Prompt window
+and enter "pip install python-vlc" and "pip install pyfiglet".  The
+program can then be ran from the command line using "python
+play_music.py".  It is also clickable from the GUI.
 
 The player assumes the following music organization:
 <pre>
