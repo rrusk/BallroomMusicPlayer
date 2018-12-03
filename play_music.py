@@ -67,7 +67,7 @@ def play_music(numSel):
 
 #    dances = ["PasoDoble","Jive"]
 #    dances = ["QuickStep","PasoDoble","Jive"]
-    dances = ["Waltz","Tango","VienneseWaltz","QuickStep","WCS","ChaCha","Samba","Rumba","PasoDoble","Jive"]
+    dances = ["Waltz","Tango","VienneseWaltz","Foxtrot","QuickStep","WCS","ChaCha","Samba","Rumba","PasoDoble","Jive"]
 
     fig = Figlet(font='standard')
     for idx in range(len(dances)):
