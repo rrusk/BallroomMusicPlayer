@@ -28,6 +28,14 @@ from os.path import expanduser
 from pyfiglet import Figlet
 import vlc
 
+def display_exception():
+    import sys
+    print sys.exc_info()[0]
+    import traceback
+    print traceback.format_exc()
+    print "Press Enter to continue ..." 
+    raw_input() 
+        
 def is_intString(s):
     try:
         int(s)
@@ -50,7 +58,7 @@ def displayInfo(player):
     title=media.get_meta(vlc.Meta.Title) or "Unknown song; title"
     album=media.get_meta(vlc.Meta.Album) or "Unknown album"
     info = title+"-"+artist+"-"+album
-    return info.encode('ascii','ignore')
+    return info.encode('ascii','ignore') # remove non-printable characters
 
 def play_music(numSel):
     numSel = numSel
@@ -100,6 +108,7 @@ def play_music(numSel):
                     cnt = numSel-1 # play only one Paso Doble
             except Exception:
                 print("Exception reading input.")
+                display_exception()
                 continue
         else:
             cnt = 0
@@ -108,16 +117,19 @@ def play_music(numSel):
             cnt = cnt + 1
             if cnt > numSel:
                 break
+            #print("Filename: "+song)
             nextsong=dirpath+"/"+song
             player=vlc.MediaPlayer(nextsong)
             player.audio_set_volume(100)
             infoStr = displayInfo(player)
-            if "Unknown" not in infoStr:
-                print(infoStr)
-            else:
-                print(infoStr)
-                #print("Filename: "+song)
-            player.play()
+            print(infoStr)
+            try:
+                #raise ValueError("A test exception was raised")
+                player.play()
+            except Exception:
+                print "*** Exception occurred ***"
+                display_exception()
+                continue
             time.sleep(1)
             while True:
                 if player.is_playing():
@@ -143,9 +155,4 @@ if __name__=='__main__':
 
         play_music(numSel)
     except Exception:
-        import sys
-        print sys.exc_info()[0]
-        import traceback
-        print traceback.format_exc()
-        print "Press Enter to continue ..." 
-        raw_input() 
+        display_exception()
