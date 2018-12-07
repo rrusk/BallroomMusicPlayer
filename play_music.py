@@ -189,12 +189,12 @@ if __name__=='__main__':
             print (" [J]ive")
             while True:
                 firstDance = raw_input("First dance <W/T/V/F/Q/WCS/C/S/R/P/J> or enter 'q' to exit: ")
-                if firstDance.lower() == 'q':
+                firstDance = firstDance.upper()
+                if firstDance == 'Q':
                     exit()
                 elif firstDance not in ('W','T','V','F','Q','WCS','C','S','R','P','J'):
                     print("Unrecognized dance input.  Please try again.")
                 else:
-                    firstDance = firstDance.upper()
                     break
         else:
             numSel = 2
