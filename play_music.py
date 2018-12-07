@@ -60,15 +60,30 @@ def displayInfo(player):
     info = title+"-"+artist+"-"+album
     return info.encode('ascii','ignore') # remove non-printable characters
 
-def play_music(numSel):
+def play_music(numSel, firstDance):
     numSel = numSel
     home = expanduser("~")
     musicDir=home+"/Music/"
 
-#    dances = ["PasoDoble","Jive"]
-#    dances = ["QuickStep","PasoDoble","Jive"]
     dances = ["Waltz","Tango","VienneseWaltz","Foxtrot","QuickStep","WCS","ChaCha","Samba","Rumba","PasoDoble","Jive"]
 
+    idx = -1
+    danceFound = False
+    for dance in dances:
+        idx = idx + 1
+        if not dance.startswith(firstDance):
+            continue
+        else:
+            danceFound = True
+            break
+
+    if not danceFound:
+        print(" Dance not found!!!")
+        continueYN = raw_input("Hit carriage return to exit and rerun program.")
+        exit()
+    else:
+        dances = dances[idx:]
+        
     fig = Figlet(font='standard')
     for idx in range(len(dances)):
         dance=dances[idx]
@@ -79,6 +94,11 @@ def play_music(numSel):
         for (dirpath, dirnames, filenames) in walk(musicPath):
             playlist.extend(filenames)
             break
+        if len(playlist) < numSel:
+            print("There are fewer than " + str(numSel) + " selections in " + musicPath + " folder.")
+            continueYN = raw_input("Continue? <Y/N> ")
+            if continueYN == 'N' or continueYN == 'n':
+               exit()
         if dance=="Waltz":
             print(" [Waltz has an extra selection for volume adjustment]")
             cnt = -1
@@ -140,20 +160,45 @@ def play_music(numSel):
 
 if __name__=='__main__':
     try:
-        if len(sys.argv) > 2:
-            print "Script to play dance music for practice"
-            print "Usage: "+sys.argv[0]+" [number]"
-            print "  [number] is musical selections per dance."
-            print "  Default is 2 if no argument provided."
-            exit(1)
-        elif len(sys.argv) == 2:
-            if not is_intString(sys.argv[1]):
-                print "The number of musical selection per dance must be an integer."
-                exit(1)
-            numSel = int(sys.argv[1])
+        fig = Figlet(font='standard')
+        print fig.renderText("MusicPlayer")
+
+        defaultsYN = raw_input("Play two selections per dance starting with Waltz <Y/N>: ")
+        if defaultsYN == 'N' or defaultsYN == 'n':
+            while True:
+                numSel = raw_input("Enter number of selections to play per dance: ")
+                if numSel.lower() == 'q':
+                    exit()
+                try:
+                    numSel = int(numSel)
+                    break
+                except ValueError:
+                    print("The input must be an integer.  Please try again or enter 'q' to exit.")
+            
+            print ("First dance?")
+            print (" [W]altz")
+            print (" [T]ango")
+            print (" [V]iennese Waltz")
+            print (" [F]oxtrot")
+            print (" [Q]uickstep")
+            print (" [WCS]")
+            print (" [C]ha Cha")
+            print (" [S]amba")
+            print (" [R]umba")
+            print (" [P]aso Doble")
+            print (" [J]ive")
+            while True:
+                firstDance = raw_input("First dance <W/T/V/F/Q/WCS/C/S/R/P/J> or enter 'q' to exit: ")
+                if firstDance.lower() == 'q':
+                    exit()
+                elif firstDance not in ('W','T','V','F','Q','WCS','C','S','R','P','J'):
+                    print("Unrecognized dance input.  Please try again.")
+                else:
+                    firstDance = firstDance.upper()
+                    break
         else:
             numSel = 2
-
-        play_music(numSel)
+            firstDance = 'W'
+        play_music(numSel, firstDance)
     except Exception:
         display_exception()
