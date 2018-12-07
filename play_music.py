@@ -23,10 +23,14 @@ SOFTWARE.
 import sys
 import time
 import random
+import os
 from os import walk
 from os.path import expanduser
 from pyfiglet import Figlet
 import vlc
+
+def cls():
+    os.system('cls' if os.name=='nt' else 'clear')
 
 def display_exception():
     import sys
@@ -199,6 +203,7 @@ if __name__=='__main__':
         else:
             numSel = 2
             firstDance = 'W'
+        cls() # clear screen
         play_music(numSel, firstDance)
     except Exception:
         display_exception()
