@@ -133,6 +133,7 @@ def play_music(numSel):
             time.sleep(1)
             while True:
                 if player.is_playing():
+                    time.sleep(1) # sleep awhile to reduce CPU usage
                     continue
                 else:
                     break
