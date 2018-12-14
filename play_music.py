@@ -29,7 +29,7 @@ from os.path import expanduser
 from pyfiglet import Figlet
 import vlc
 
-def cls():
+def clearScreen():
     os.system('cls' if os.name=='nt' else 'clear')
 
 def display_exception():
@@ -192,9 +192,9 @@ if __name__=='__main__':
             print (" [P]aso Doble")
             print (" [J]ive")
             while True:
-                firstDance = raw_input("First dance <W/T/V/F/Q/WCS/C/S/R/P/J> or enter 'q' to exit: ")
+                firstDance = raw_input("First dance <W/T/V/F/Q/WCS/C/S/R/P/J> or enter 'x' to e[x]it: ")
                 firstDance = firstDance.upper()
-                if firstDance == 'Q':
+                if firstDance == 'X':
                     exit()
                 elif firstDance not in ('W','T','V','F','Q','WCS','C','S','R','P','J'):
                     print("Unrecognized dance input.  Please try again.")
@@ -203,7 +203,7 @@ if __name__=='__main__':
         else:
             numSel = 2
             firstDance = 'W'
-        cls() # clear screen
+        clearScreen()
         play_music(numSel, firstDance)
     except Exception:
         display_exception()
