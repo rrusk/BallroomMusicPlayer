@@ -20,26 +20,104 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
-import sys
-import time
-import random
 import os
-from os import walk
-from os.path import expanduser
-from pyfiglet import Figlet
+import random
+import time
+
 import vlc
+from pyfiglet import Figlet
+
+"""
+The ballroom dance music is assumed to be organized so that the music
+for each dance is in a separate directory:
+
+$HOME/Music/
+|--- ChaCha
+|--- Foxtrot
+|--- Jive
+|--- LineDance
+|--- PasoDoble
+|--- QuickStep
+|--- Rumba
+|--- Samba
+|--- Tango
+|--- VienneseWaltz
+|--- Waltz
+|--- WCS
+"""
+
+
+def getMusicDir():
+    home = os.path.expanduser("~")
+    return os.path.join(home, "Music")
+    #return os.path.join(home, "Downloads", "Music", "WF")
+
+
+def getDances():
+    dances = ["Waltz", "Tango", "VienneseWaltz", "Foxtrot", "QuickStep", "WCS",
+              "ChaCha", "Samba", "Rumba", "PasoDoble", "Jive"]
+    return dances
+
+
+def availableMusicByDance():
+    musicDir = getMusicDir()
+    dances = getDances()
+    musicList = []
+    for idx in range(len(dances)):
+        dance = dances[idx]
+        musicPath = os.path.join(musicDir, dance)
+        playlist = []
+        if not os.path.isdir(musicPath):
+            print("WARNING: The directory " + musicPath + " does not exist.")
+        else:
+            for (dirpath, dirnames, filenames) in os.walk(musicPath):
+                for name in filenames:
+                    playlist.append(os.path.join(dirpath, name))
+        musicList.append(playlist)
+    return musicList
+
+
+def randomList(a):
+    b = []
+    for i in range(len(a)):
+        element = random.choice(a)
+        a.remove(element)
+        b.append(element)
+    return b
+
+
+def randomizeMusicByDance(musicList):
+    rMusicList = []
+    for dance in musicList:
+        rMusicList.append(randomList(dance))
+    return rMusicList
+
+
+def validMusicLists(musicL):
+    result = True
+    for idx in range(len(getDances())):
+        for musicfile in musicL[idx]:
+            if os.path.isfile(musicfile) and os.access(musicfile, os.R_OK):
+                continue
+            else:
+                print("File {} doesn't exist or isn't readable".format(musicfile))
+                result = False
+    return result
+
 
 def clearScreen():
-    os.system('cls' if os.name=='nt' else 'clear')
+    os.system('cls' if os.name == 'nt' else 'clear')
+
 
 def display_exception():
     import sys
     print sys.exc_info()[0]
     import traceback
     print traceback.format_exc()
-    print "Press Enter to continue ..." 
-    raw_input() 
-        
+    print "Press Enter to continue ..."
+    raw_input()
+
+
 def is_intString(s):
     try:
         int(s)
@@ -47,125 +125,134 @@ def is_intString(s):
     except ValueError:
         return False
 
-def randomList(a):
-    b=[]
-    for i in range(len(a)):
-        element=random.choice(a)
-        a.remove(element)
-        b.append(element)
-    return b
 
-def displayInfo(player):
-    media=player.get_media()
-    media.parse()
-    artist=media.get_meta(vlc.Meta.Artist) or "Unknown artist"
-    title=media.get_meta(vlc.Meta.Title) or "Unknown song; title"
-    album=media.get_meta(vlc.Meta.Album) or "Unknown album"
-    info = title+"-"+artist+"-"+album
-    return info.encode('ascii','ignore') # remove non-printable characters
+def mediaInfo(player):
+    media = player.get_media()
+    if media is not None:
+        media.parse()
+        title = media.get_meta(vlc.Meta.Title) or "Unknown song; title"
+        artist = media.get_meta(vlc.Meta.Artist) or "Unknown artist"
+        album = media.get_meta(vlc.Meta.Album) or "Unknown album"
+        return "{:<60}  {:<20}  {:<20}".format(title.encode('ascii', 'ignore'),
+                                               artist.encode('ascii', 'ignore'),
+                                               album.encode('ascii', 'ignore'))
+    else:
+        return ""
 
-def play_music(numSel, firstDance):
-    numSel = numSel
-    home = expanduser("~")
-    musicDir=home+"/Music/"
 
-    dances = ["Waltz","Tango","VienneseWaltz","Foxtrot","QuickStep","WCS","ChaCha","Samba","Rumba","PasoDoble","Jive"]
-
+def getIndexFirstDance(theFirstDance):
+    dances = getDances()
     idx = -1
+    i = -1
     danceFound = False
     for dance in dances:
-        idx = idx + 1
-        if not dance.startswith(firstDance):
+        i = i + 1
+        if not dance.startswith(theFirstDance):
             continue
         else:
             danceFound = True
             break
+    if danceFound:
+        idx = i
+    return idx
 
-    if not danceFound:
+
+def play_music(theNumSel, offset, theFirstDance, danceMusic):
+    idx = getIndexFirstDance(theFirstDance)
+    if idx < 0:
         print(" Dance not found!!!")
-        continueYN = raw_input("Hit carriage return to exit and rerun program.")
+        raw_input("Hit carriage return to exit and rerun program.")
         exit()
-    else:
-        dances = dances[idx:]
-        
-    fig = Figlet(font='standard')
-    for idx in range(len(dances)):
-        dance=dances[idx]
-        #print "\t\t*** "+dance.upper()+" ***"
-        print fig.renderText(dance)
-        musicPath=musicDir+dance
-        playlist=[]
-        for (dirpath, dirnames, filenames) in walk(musicPath):
-            playlist.extend(filenames)
-            break
-        if len(playlist) < numSel:
-            print("There are fewer than " + str(numSel) + " selections in " + musicPath + " folder.")
+    myFig = Figlet(font='standard')
+    dances = getDances()
+    for i in range(idx, len(dances)):
+        dance = dances[i]
+        print myFig.renderText(dance)
+
+        if theNumSel + offset > len(danceMusic[i]):
+            print("There are fewer than " + str(theNumSel + offset) + " selections in the "
+                  + os.path.join(getMusicDir(), dance) + " folder.")
             continueYN = raw_input("Continue? <Y/N> ")
             if continueYN == 'N' or continueYN == 'n':
-               exit()
-        if dance=="Waltz":
-            print(" [Waltz has an extra selection for volume adjustment]")
-            cnt = -1
-        elif dance=="PasoDoble":
-            song="Get Ready for Paso.mp3"
-            nextsong=dirpath+"/"+song
-            player=vlc.MediaPlayer(nextsong)
-            player.audio_set_volume(100)
-            infoStr = displayInfo(player)
-            if "Unknown" not in infoStr:
-                print(infoStr)
+                exit()
+        playlist = danceMusic[i][offset:]  # music for dance using offset to skip selections previously played
+
+        if dance == "Waltz":
+            if offset == 0:  # at beginning of practice session
+                print("[Waltz will have an extra selection for volume adjustment]")
+                numPlayed = -1
+            else:  # on second or later sessions
+                # volume adjustment increased number previously selected for Waltz by 1
+                playlist = playlist[1:]
+                numPlayed = 0
+        elif dance == "PasoDoble":
+            nextsong = os.path.join(getMusicDir(), dance, "Get Ready for Paso.mp3")
+            if not os.path.isfile(nextsong) or not os.access(nextsong, os.R_OK):
+                print("File {} doesn't exist or isn't readable".format(nextsong))
             else:
-                print(infoStr)
-                #print("Filename: "+song)
-            player.play()
-            time.sleep(17)
-            for level in range(100,10,-10):
-                player.audio_set_volume(level)
-                time.sleep(1)
-            player.stop()
-            #time.sleep(5)
+                player = vlc.MediaPlayer(nextsong)
+                player.audio_set_volume(100)
+                print mediaInfo(player)
+                player.play()
+                time.sleep(17)
+                for level in range(100, 10, -10):
+                    player.audio_set_volume(level)
+                    time.sleep(1)
+                player.stop()
             try:
-                skipYN = raw_input("Skip Paso Doble <Y/N>: ")
-                if skipYN == 'Y' or skipYN == 'y':
-                    cnt = numSel
+                while True:
+                    skipYN = raw_input("Skip Paso Doble <Y/N>: ")
+                    if skipYN.upper() not in ('Y', 'N'):
+                        print("Unrecognized input.  Enter either 'Y' or 'N'.")
+                    else:
+                        break
+                if skipYN.upper() == 'Y':
+                    numPlayed = theNumSel
                 else:
-                    cnt = numSel-1 # play only one Paso Doble
+                    numPlayed = theNumSel - 1  # play only one Paso Doble
             except Exception:
                 print("Exception reading input.")
                 display_exception()
                 continue
         else:
-            cnt = 0
-        rplaylist=randomList(playlist)
-        for song in rplaylist:
-            cnt = cnt + 1
-            if cnt > numSel:
+            numPlayed = 0
+
+        for song in playlist:
+            numPlayed = numPlayed + 1
+            if numPlayed > theNumSel:
                 break
-            #print("Filename: "+song)
-            nextsong=dirpath+"/"+song
-            player=vlc.MediaPlayer(nextsong)
-            player.audio_set_volume(100)
-            infoStr = displayInfo(player)
-            print(infoStr)
             try:
-                #raise ValueError("A test exception was raised")
-                player.play()
+                player = vlc.MediaPlayer(song)
+                player.audio_set_volume(100)
+                infoStr = mediaInfo(player)
+                print(infoStr)
+                playing = player.play()
+                if playing == -1:
+                    print "Failed to play selection."
+                    numPlayed = numPlayed - 1
             except Exception:
                 print "*** Exception occurred ***"
                 display_exception()
+                numPlayed = numPlayed - 1
                 continue
             time.sleep(1)
             while True:
                 if player.is_playing():
-                    time.sleep(1) # sleep awhile to reduce CPU usage
+                    time.sleep(1)  # sleep awhile to reduce CPU usage
                     continue
                 else:
                     break
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     try:
         fig = Figlet(font='standard')
         print fig.renderText("MusicPlayer")
+
+        theMusic = availableMusicByDance()
+        musicLists = randomizeMusicByDance(theMusic)
+        if not validMusicLists(musicLists):
+            print("Continuing but there may be problems...")
 
         defaultsYN = raw_input("Play two selections per dance starting with Waltz <Y/N>: ")
         if defaultsYN == 'N' or defaultsYN == 'n':
@@ -178,7 +265,7 @@ if __name__=='__main__':
                     break
                 except ValueError:
                     print("The input must be an integer.  Please try again or enter 'q' to exit.")
-            
+
             print ("First dance?")
             print (" [W]altz")
             print (" [T]ango")
@@ -196,14 +283,22 @@ if __name__=='__main__':
                 firstDance = firstDance.upper()
                 if firstDance == 'X':
                     exit()
-                elif firstDance not in ('W','T','V','F','Q','WCS','C','S','R','P','J'):
-                    print("Unrecognized dance input.  Please try again.")
+                elif firstDance not in ('W', 'T', 'V', 'F', 'Q', 'WCS', 'C', 'S', 'R', 'P', 'J'):
+                    print("Unrecognized dance selection.  Please try again.")
                 else:
                     break
         else:
             numSel = 2
             firstDance = 'W'
         clearScreen()
-        play_music(numSel, firstDance)
+        play_music(numSel, 0, firstDance, musicLists)
+        print
+        print "At end of first playlist.  Press Enter to begin second playlist starting with Waltz ..."
+        raw_input()
+        print
+        play_music(numSel, numSel, 'W', musicLists)
+        print
+        raw_input("At end of second playlist.  Press Enter to exit...")
+
     except Exception:
         display_exception()
