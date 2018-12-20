@@ -49,8 +49,8 @@ $HOME/Music/
 
 def getMusicDir():
     home = os.path.expanduser("~")
-    return os.path.join(home, "Music")
-    #return os.path.join(home, "Downloads", "Music", "WF")
+    return os.path.join(home, u"Music") # Make sure filenames are utf-8 encoded
+    #return os.path.join(home, u"Downloads", u"Music", u"WF")
 
 
 def getDances():
