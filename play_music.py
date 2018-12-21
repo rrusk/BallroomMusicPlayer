@@ -23,6 +23,7 @@ SOFTWARE.
 import os
 import random
 import time
+import curses
 
 import vlc
 from pyfiglet import Figlet
@@ -49,8 +50,8 @@ $HOME/Music/
 
 def getMusicDir():
     home = os.path.expanduser("~")
-    return os.path.join(home, u"Music") # Make sure filenames are utf-8 encoded
-    #return os.path.join(home, u"Downloads", u"Music", u"WF")
+    return os.path.join(home, u"Music")  # Make sure filenames are utf-8 encoded
+    # return os.path.join(home, u"Downloads", u"Music", u"WF")
 
 
 def getDances():
@@ -157,6 +158,24 @@ def getIndexFirstDance(theFirstDance):
     return idx
 
 
+def monitor_keypresses(stdscr, player):
+    stdscr.nodelay(True)
+    stdscr.clear()  # doesn't seem to have any effect
+    curses.noecho() # doesn't seem to work
+    try:
+        key = stdscr.getkey()
+        if key == " ": # pause music
+            player.pause()
+            stdscr.refresh() # probably not useful
+        if key == 'n': # next selection; i.e., stop playing current selection
+            player.stop()
+            stdscr.refresh   # probably not useful
+    except Exception as e:
+        # No input
+        pass
+    return True
+
+
 def play_music(theNumSel, offset, theFirstDance, danceMusic):
     idx = getIndexFirstDance(theFirstDance)
     if idx < 0:
@@ -237,7 +256,8 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
                 continue
             time.sleep(1)
             while True:
-                if player.is_playing():
+                curses.wrapper(monitor_keypresses, player)
+                if player.is_playing() or player.get_state() == vlc.State.Paused:
                     time.sleep(1)  # sleep awhile to reduce CPU usage
                     continue
                 else:
@@ -293,11 +313,21 @@ if __name__ == '__main__':
         clearScreen()
         play_music(numSel, 0, firstDance, musicLists)
         print
-        print "At end of first playlist.  Press Enter to begin second playlist starting with Waltz ..."
-        raw_input()
-        print
-        play_music(numSel, numSel, 'W', musicLists)
-        print
+        while True:
+            continueYN = raw_input("At end of playlist.  Begin another playlist starting with Waltz <Y/N>: ")
+            continueYN = continueYN.upper()
+            if continueYN not in ('Y', 'N'):
+                print "Unrecognized input.  Try again."
+            else:
+                break
+        if continueYN == 'Y':
+            print
+            play_music(numSel, numSel, 'W', musicLists)
+            print
+        else:
+            raw_input("Enter carriage return to exit program...")
+            exit()
+
         raw_input("At end of second playlist.  Press Enter to exit...")
 
     except Exception:
