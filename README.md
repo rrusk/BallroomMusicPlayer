@@ -18,11 +18,12 @@ from https://www.python.org/downloads/windows/.  Make sure Python is
 added to your path during installation. (It is the last item in the
 "Customize Python 2.7.15" list. Select "Entire feature will be
 installed on local hard drive".) Then open a Command Prompt window and
-enter "pip install python-vlc", "pip install pyfiglet" and "pip
-install windows-curses".  (If "pip" isn't found, log out or restart
-Windows so that the Python binaries are added to your environment
-variables.)  The program can then be ran from the command line using
-"python play_music.py".  It is also clickable from the GUI.
+enter "pip install python-vlc", "pip install pyfiglet", "pip install
+windows-curses" and "pip install keyboard".  (If "pip" isn't found,
+log out or restart Windows so that the Python binaries are added to
+your environment variables.)  The program can then be ran from the
+command line using "python play_music.py".  It is also clickable from
+the GUI.
 
 The player assumes the following music organization:
 <pre>
@@ -45,9 +46,10 @@ The musical selections are assumed to be at the correct tempo and to
 be of appropriate length.  The volume of the musical selections should
 be normalized.
 
+To pause music press spacebar.  The music can be resumed by pressing
+the spacebar again.  To skip to the next selection press 'n'.
+
 <pre>
 TODO:
-Port to Windows
 Implement GUI
-Add controls to pause, restart, go to next select, delete selection, quit, etc.
 </pre>

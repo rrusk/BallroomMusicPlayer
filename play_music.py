@@ -23,7 +23,13 @@ SOFTWARE.
 import os
 import random
 import time
-import curses
+
+# import curses
+
+if os.name == "nt":
+    import keyboard
+else:
+    import keypoller
 
 import vlc
 from pyfiglet import Figlet
@@ -46,6 +52,48 @@ $HOME/Music/
 |--- Waltz
 |--- WCS
 """
+
+
+# def my_wrapper(func, *args, **kwds):
+#     """Wrapper function that initializes curses and calls another function,
+#     restoring normal keyboard/screen behavior on error.
+#     The callable object 'func' is then passed the main window 'stdscr'
+#     as its first argument, followed by any other arguments passed to
+#     wrapper().
+#     """
+#
+#     try:
+#         # Initialize curses
+#         curses.filter()
+#         stdscr = curses.initscr()
+#         # Turn off echoing of keys, and enter cbreak mode,
+#         # where no buffering is performed on keyboard input
+#         curses.noecho()
+#         curses.cbreak()
+#
+#         # In keypad mode, escape sequences for special keys
+#         # (like the cursor keys) will be interpreted and
+#         # a special value like curses.KEY_LEFT will be returned
+#         stdscr.keypad(1)
+#
+#         # Start color, too.  Harmless if the terminal doesn't have
+#         # color; user can test with has_color() later on.  The try/catch
+#         # works around a minor bit of over-conscientiousness in the curses
+#         # module -- the error return from C start_color() is ignorable.
+#         try:
+#             # curses.start_color()
+#             pass
+#         except:
+#             pass
+#
+#         return func(stdscr, *args, **kwds)
+#     finally:
+#         # Set everything back to normal
+#         if 'stdscr' in locals():
+#             stdscr.keypad(0)
+#             curses.echo()
+#             curses.nocbreak()
+#             curses.endwin()
 
 
 def getMusicDir():
@@ -158,22 +206,24 @@ def getIndexFirstDance(theFirstDance):
     return idx
 
 
-def monitor_keypresses(stdscr, player):
-    stdscr.nodelay(True)
-    stdscr.clear()  # doesn't seem to have any effect
-    curses.noecho() # doesn't seem to work
-    try:
-        key = stdscr.getkey()
-        if key == " ": # pause music
-            player.pause()
-            stdscr.refresh() # probably not useful
-        if key == 'n': # next selection; i.e., stop playing current selection
-            player.stop()
-            stdscr.refresh   # probably not useful
-    except Exception as e:
-        # No input
-        pass
-    return True
+# def monitor_keypresses(stdscr, player):
+#     stdscr.nodelay(True)
+#     stdscr.clear()  # doesn't seem to have any effect
+#     curses.noecho()  # doesn't seem to work
+#     stdscr.idcok(False)
+#     stdscr.idlok(False)
+#     try:
+#         key = stdscr.getkey()
+#         if key == " ":  # pause music
+#             player.pause()
+#             stdscr.erase()  # probably not useful
+#         if key == 'n':  # next selection; i.e., stop playing current selection
+#             player.stop()
+#             stdscr.erase  # probably not useful
+#     except Exception as e:
+#         # No input
+#         pass
+#     return True
 
 
 def play_music(theNumSel, offset, theFirstDance, danceMusic):
@@ -255,13 +305,40 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
                 numPlayed = numPlayed - 1
                 continue
             time.sleep(1)
-            while True:
-                curses.wrapper(monitor_keypresses, player)
-                if player.is_playing() or player.get_state() == vlc.State.Paused:
-                    time.sleep(1)  # sleep awhile to reduce CPU usage
-                    continue
-                else:
-                    break
+            if os.name != 'nt':
+                with keypoller.KeyPoller() as keyPoller:
+                    while True:
+                        # my_wrapper(monitor_keypresses, player)
+                        c = keyPoller.poll()
+                        while keyPoller.poll() is not None:
+                            continue  # discard rest of characters after first
+                        if not c is None:
+                            if c == " ":
+                                player.pause()
+                            elif c == "n":
+                                player.stop()
+                            else:
+                                pass
+                        if player.is_playing() or player.get_state() == vlc.State.Paused:
+                            time.sleep(1)  # sleep awhile to reduce CPU usage
+                            continue
+                        else:
+                            break
+            else:
+                def on_press_reaction(event):
+                    if event.name == 'space':
+                        player.pause()
+                    elif event.name == 'n':
+                        player.stop()
+
+                keyboard.on_press(on_press_reaction)
+                while True:
+                    # my_wrapper(monitor_keypresses, player)
+                    if player.is_playing() or player.get_state() == vlc.State.Paused:
+                        time.sleep(1)  # sleep awhile to reduce CPU usage
+                        continue
+                    else:
+                        break
 
 
 if __name__ == '__main__':
