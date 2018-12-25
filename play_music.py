@@ -277,7 +277,7 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
                 keyboard.on_press(on_press_reaction)
                 while True:
                     if player.is_playing() or player.get_state() == vlc.State.Paused:
-                        time.sleep(1)  # sleep awhile to reduce CPU usage
+                        time.sleep(0.1)  # sleep awhile to reduce CPU usage
                         continue
                     else:
                         break
