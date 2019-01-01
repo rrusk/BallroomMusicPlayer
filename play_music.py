@@ -27,6 +27,8 @@ import time
 import vlc
 from pyfiglet import Figlet
 
+from mutagen.mp3 import MP3
+
 if os.name == "nt":
     import keyboard
 else:
@@ -76,6 +78,9 @@ $HOME/Music/
 |--- WCS
 """
 
+shortest_song = 105.0  # only use music greater than of equals to 1m45s
+longest_song = 210.0  # only use music less than or equal to 3m30s
+
 
 def getMusicDir():
     home = os.path.expanduser("~")
@@ -102,7 +107,19 @@ def availableMusicByDance():
         else:
             for (dirpath, dirnames, filenames) in os.walk(musicPath):
                 for name in filenames:
-                    playlist.append(os.path.join(dirpath, name))
+                    fullpathname = os.path.join(dirpath, name)
+                    lengthOK = True
+                    try:
+                        audio = MP3(fullpathname)
+                        if (audio.info.length) > longest_song:
+                            lengthOK = False
+                        if (audio.info.length) < shortest_song:
+                            lengthOK = False
+                    except:
+                        pass  # probably m4a file
+                    if lengthOK:
+                        playlist.append(os.path.join(dirpath, name))
+        # print dance, "has", len(playlist), "selections"
         musicList.append(playlist)
     return musicList
 
