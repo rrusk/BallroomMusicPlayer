@@ -10,20 +10,24 @@ python 2.7.15.
 
 If using Ubuntu, install vlc using 'sudo apt install vlc'.  Then
 install python-vlc using 'pip install python-vlc'.  FIGlet is used for
-dance banners; install pyfiglet using `pip install pyfiglet'.
+dance banners; install pyfiglet using `pip install pyfiglet'. Mutagen
+is used to determine the length of musical selections.  Install it
+using `pip install mutagen`.
 
-If using Windows, install 64-bit VLC from
-https://www.videolan.org/vlc/ and the latest 64-bit Python 2 release
+If using Windows, install the 64-bit version of VLC from
+https://www.videolan.org/vlc/ and the latest 64-bit Python 2.7 release
 from https://www.python.org/downloads/windows/.  Make sure Python is
 added to your path during installation. (It is the last item in the
 "Customize Python 2.7.15" list. Select "Entire feature will be
 installed on local hard drive".) Then open a Command Prompt window and
-enter "pip install python-vlc", "pip install pyfiglet", "pip install
-windows-curses" and "pip install keyboard".  (If "pip" isn't found,
-log out or restart Windows so that the Python binaries are added to
-your environment variables.)  The program can then be ran from the
-command line using "python play_music.py".  It is also clickable from
-the GUI.
+enter:
+<pre>
+pip install python-vlc pyfiglet windows-curses keyboard mutagen
+</pre>
+(If "pip" isn't found, log out or restart Windows so that the Python
+binaries are added to your environment variables.)  The program can
+then be ran from the command line using "python play_music.py".  It is
+also clickable from the GUI.
 
 The player assumes the following music organization:
 <pre>
