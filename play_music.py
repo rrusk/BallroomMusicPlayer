@@ -323,6 +323,8 @@ if __name__ == '__main__':
         fig = Figlet(font='standard')
         print fig.renderText("MusicPlayer")
 
+        print "Initializing.  This may take a few seconds..."
+
         theMusic = availableMusicByDance()
         musicLists = randomizeMusicByDance(theMusic)
         if not validMusicLists(musicLists):
