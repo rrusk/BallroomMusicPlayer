@@ -76,6 +76,10 @@ $HOME/Music/
 |--- VienneseWaltz
 |--- Waltz
 |--- WCS
+
+The line dance selection method used in play_linedance() depends on the title of each line
+dance starting with a different character than the first character of all the other line dances.
+If that isn't true the selection method used in play_linedance will need to be modified.
 """
 
 shortest_song = 105.0  # only use music greater than of equals to 1m45s
@@ -334,6 +338,9 @@ def play_linedance(danceMusic):
     playlist = danceMusic[idx]
     playlist.sort()
     infoStr = []
+    # The line dance selection method depends on the title of each line dance starting with
+    # a different character than the first character of all the other line dances.
+    # If that isn't true the selection method will need to be modified.
     print "Available Line Dances:"
     selection = []
     for i in range(len(playlist)):
@@ -488,7 +495,7 @@ if __name__ == '__main__':
             if continueYN == 'Y':
                 print
                 repetitions = repetitions + 1
-                if repetitions < 3:
+                if repetitions < 2:
                     play_music(numSel, repetitions * numSel, 'W', musicLists)
                 else:
                     # on 3rd and subsequent passes only play one selection.
