@@ -90,7 +90,7 @@ def getMusicDir():
 
 def getDances():
     dances = ["Waltz", "Tango", "VienneseWaltz", "Foxtrot", "QuickStep", "WCS",
-              "ChaCha", "Samba", "Rumba", "PasoDoble", "Jive"]
+              "ChaCha", "Samba", "Rumba", "PasoDoble", "Jive", "LineDance"]
     return dances
 
 
@@ -117,7 +117,7 @@ def availableMusicByDance():
                             lengthOK = False
                     except:
                         pass  # probably m4a file
-                    if lengthOK:
+                    if lengthOK or dance == "LineDance":  # some line dances are long
                         playlist.append(os.path.join(dirpath, name))
         # print dance, "has", len(playlist), "selections"
         musicList.append(playlist)
@@ -187,14 +187,14 @@ def mediaInfo(player):
         return ""
 
 
-def getIndexFirstDance(theFirstDance):
+def getIndexDance(theDance):
     dances = getDances()
     idx = -1
     i = -1
     danceFound = False
     for dance in dances:
         i = i + 1
-        if not dance.startswith(theFirstDance):
+        if not dance.startswith(theDance):
             continue
         else:
             danceFound = True
@@ -205,7 +205,7 @@ def getIndexFirstDance(theFirstDance):
 
 
 def play_music(theNumSel, offset, theFirstDance, danceMusic):
-    idx = getIndexFirstDance(theFirstDance)
+    idx = getIndexDance(theFirstDance)
     if idx < 0:
         print(" Dance not found!!!")
         raw_input("Hit carriage return to exit and rerun program.")
@@ -214,6 +214,10 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
     dances = getDances()
     for i in range(idx, len(dances)):
         dance = dances[i]
+        if dance == "LineDance":
+            continue  # line dances are handled in play_linedance()
+        if dance == "PasoDoble" and theNumSel == 1:
+            continue  # skip Paso when playing only one selection per dance
         print myFig.renderText(dance)
 
         if theNumSel + offset > len(danceMusic[i]):
@@ -318,6 +322,96 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
                             break
 
 
+def play_linedance(danceMusic):
+    theDance = "LineDance"
+    idx = getIndexDance(theDance)
+    if idx < 0:
+        print(theDance + " not found!!!")
+        raw_input("Hit carriage return to continue without " + theDance)
+        return
+    myFig = Figlet(font='standard')
+    print myFig.renderText(theDance)
+    playlist = danceMusic[idx]
+    playlist.sort()
+    infoStr = []
+    print "Available Line Dances:"
+    selection = []
+    for i in range(len(playlist)):
+        song = playlist[i]
+        player = vlc.MediaPlayer(song)
+        infoStr.append(mediaInfo(player))
+        player.stop()
+        selection.append(infoStr[i][0])
+        print selection[i] + ": " + infoStr[i]
+    selectionStr = "Which Line Dance <"
+    for i in range(len(selection)):
+        selectionStr = selectionStr + selection[i] + "/"
+    selectionStr = selectionStr[:-1] + "> or enter 'n' for [n]one: "
+    while True:
+        lineDance = raw_input(selectionStr)
+        lineDance = lineDance.upper()
+        if lineDance == 'N':
+            return
+        elif lineDance not in selection:
+            print("Unrecognized line dance selection.  Please try again.")
+        else:
+            break
+
+    def indexSelected():
+        for i in range(len(selection)):
+            if selection[i] == lineDance:
+                return i
+        return -1
+
+    indexS = indexSelected()
+    song = playlist[indexS]
+    print
+    print infoStr[indexS]
+    try:
+        player = vlc.MediaPlayer(song)
+        player.audio_set_volume(100)
+        playing = player.play()
+        if playing == -1:
+            print "Failed to play selection."
+    except Exception:
+        print "*** Exception occurred ***"
+        display_exception()
+        return
+    time.sleep(1)
+    if os.name == 'nt':
+        def on_press_reaction(event):
+            if event.name == 'space':
+                player.pause()
+            elif event.name == 'n':
+                player.stop()
+
+        keyboard.on_press(on_press_reaction)
+        while True:
+            if player.is_playing() or player.get_state() == vlc.State.Paused:
+                time.sleep(0.1)  # sleep awhile to reduce CPU usage
+                continue
+            else:
+                break
+    else:
+        with KeyPoller() as keyPoller:
+            while True:
+                c = keyPoller.poll()
+                while keyPoller.poll() is not None:
+                    continue  # discard rest of characters after first
+                if not c is None:
+                    if c == " ":
+                        player.pause()
+                    elif c == "n":
+                        player.stop()
+                    else:
+                        pass
+                if player.is_playing() or player.get_state() == vlc.State.Paused:
+                    time.sleep(1)  # sleep awhile to reduce CPU usage
+                    continue
+                else:
+                    break
+
+
 if __name__ == '__main__':
     try:
         fig = Figlet(font='standard')
@@ -328,7 +422,7 @@ if __name__ == '__main__':
         theMusic = availableMusicByDance()
         musicLists = randomizeMusicByDance(theMusic)
         if not validMusicLists(musicLists):
-            print("Continuing but there may be problems...")
+            print("Potential issues with playlist.  Continuing but there may be problems...")
 
         defaultsYN = raw_input("Play two selections per dance starting with Waltz <Y/N>: ")
         if defaultsYN == 'N' or defaultsYN == 'n':
@@ -368,23 +462,41 @@ if __name__ == '__main__':
             firstDance = 'W'
         clearScreen()
         play_music(numSel, 0, firstDance, musicLists)
+
+        # Line dance played after first playlist ends
         print
         while True:
-            continueYN = raw_input("At end of playlist.  Begin another playlist starting with Waltz <Y/N>: ")
+            continueYN = raw_input("At end of first playlist.  Play a line dance <Y/N>: ")
             continueYN = continueYN.upper()
             if continueYN not in ('Y', 'N'):
                 print "Unrecognized input.  Try again."
             else:
                 break
         if continueYN == 'Y':
-            print
-            play_music(numSel, numSel, 'W', musicLists)
-            print
-        else:
-            raw_input("Enter carriage return to exit program...")
-            exit()
+            play_linedance(musicLists)
 
-        raw_input("At end of second playlist.  Press Enter to exit...")
+        repetitions = 0
+        while True:
+            print
+            while True:
+                continueYN = raw_input("Begin another playlist starting with Waltz <Y/N>: ")
+                continueYN = continueYN.upper()
+                if continueYN not in ('Y', 'N'):
+                    print "Unrecognized input.  Try again."
+                else:
+                    break
+            if continueYN == 'Y':
+                print
+                repetitions = repetitions + 1
+                if repetitions < 3:
+                    play_music(numSel, repetitions * numSel, 'W', musicLists)
+                else:
+                    # on 3rd and subsequent passes only play one selection.
+                    play_music(1, 2 * numSel + repetitions - 2, 'W', musicLists)
+                print
+            else:
+                raw_input("Enter carriage return to exit program...")
+                exit()
 
     except Exception:
         display_exception()
