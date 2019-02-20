@@ -28,6 +28,8 @@ import vlc
 from pyfiglet import Figlet
 
 from mutagen.mp3 import MP3
+from mutagen.mp4 import MP4
+from mutagen.flac import FLAC
 
 if os.name == "nt":
     import keyboard
@@ -89,6 +91,7 @@ longest_song = 210.0  # only use music less than or equal to 3m30s
 def getMusicDir():
     home = os.path.expanduser("~")
     return os.path.join(home, u"Music")  # Make sure filenames are utf-8 encoded
+    # return os.path.join(home, u"Music", u"Creena")
     # return os.path.join(home, u"Downloads", u"Music", u"WF")
 
 
@@ -112,15 +115,24 @@ def availableMusicByDance():
             for (dirpath, dirnames, filenames) in os.walk(musicPath):
                 for name in filenames:
                     fullpathname = os.path.join(dirpath, name)
+                    filename, file_extension = os.path.splitext(fullpathname)
                     lengthOK = True
                     try:
-                        audio = MP3(fullpathname)
-                        if (audio.info.length) > longest_song:
+                        if file_extension == ".mp3":
+                            audio = MP3(fullpathname)
+                        elif file_extension == ".m4a":
+                            audio = MP4(fullpathname)
+                        elif file_extension == ".flac":
+                            audio = FLAC(fullpathname)
+                        else:
+                            print "Unrecognized file extension for " + fullpathname
+                        if audio.info.length < shortest_song or audio.info.length > longest_song:
                             lengthOK = False
-                        if (audio.info.length) < shortest_song:
-                            lengthOK = False
+                        # if not lengthOK:
+                        #     print audio.filename + " is of length " + str(audio.info.length)
                     except:
-                        pass  # probably m4a file
+                        print "Exception for " + fullpathname
+                        pass  # can't determine length
                     if lengthOK or dance == "LineDance":  # some line dances are long
                         playlist.append(os.path.join(dirpath, name))
         # print dance, "has", len(playlist), "selections"
