@@ -302,7 +302,7 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
                 display_exception()
                 numPlayed = numPlayed - 1
                 continue
-            time.sleep(1)
+            time.sleep(3)
 
             if os.name == 'nt':
                 def on_press_reaction(event):
