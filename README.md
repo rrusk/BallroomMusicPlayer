@@ -53,6 +53,15 @@ be normalized.
 To pause music press spacebar.  The music can be resumed by pressing
 the spacebar again.  To skip to the next selection press 'n'.
 
+WINDOWS BUG FIX: (seen in Windows 8.1, Windows 10)
+
+It appears that libvlc has a bug related to changing from daylight
+standard time to daylight saving time.  After the time change libvlc
+complains that the plugin cache is stale.  The error message begins
+with "main libvlc error: stale plugins cache: modified c:\".  After
+many warnings BallroomMusicPlay will continue.  VLC provides an executable to update
+the plugin cache timestamps.  To run it, execute resolve-stale-plugins.bat as Administrator.
+
 <pre>
 TODO:
 Implement GUI
