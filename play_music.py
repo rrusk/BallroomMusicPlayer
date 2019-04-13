@@ -239,7 +239,7 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
         if theNumSel + offset > len(danceMusic[i]):
             print("There are fewer than " + str(theNumSel + offset) + " selections in the "
                   + os.path.join(getMusicDir(), dance) + " folder.")
-            continueYN = raw_input("Continue? <Y/N> ")
+            continueYN = raw_input("Continue? <Y/N> ").strip()
             if continueYN == 'N' or continueYN == 'n':
                 exit()
         playlist = danceMusic[i][offset:]  # music for dance using offset to skip selections previously played
@@ -268,7 +268,7 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
                 player.stop()
             try:
                 while True:
-                    skipYN = raw_input("Skip Paso Doble <Y/N>: ")
+                    skipYN = raw_input("Skip Paso Doble <Y/N>: ").strip()
                     if skipYN.upper() not in ('Y', 'N'):
                         print("Unrecognized input.  Enter either 'Y' or 'N'.")
                     else:
@@ -367,7 +367,7 @@ def play_linedance(danceMusic):
         selectionStr = selectionStr + selection[i] + "/"
     selectionStr = selectionStr[:-1] + "> or enter 'n' for [n]one: "
     while True:
-        lineDance = raw_input(selectionStr)
+        lineDance = raw_input(selectionStr).strip()
         lineDance = lineDance.upper()
         if lineDance == 'N':
             return
@@ -443,10 +443,10 @@ if __name__ == '__main__':
         if not validMusicLists(musicLists):
             print("Potential issues with playlist.  Continuing but there may be problems...")
 
-        defaultsYN = raw_input("Play two selections per dance starting with Waltz <Y/N>: ")
+        defaultsYN = raw_input("Play two selections per dance starting with Waltz <Y/N>: ").strip()
         if defaultsYN == 'N' or defaultsYN == 'n':
             while True:
-                numSel = raw_input("Enter number of selections to play per dance: ")
+                numSel = raw_input("Enter number of selections to play per dance: ").strip()
                 if numSel.lower() == 'q':
                     exit()
                 try:
@@ -469,7 +469,7 @@ if __name__ == '__main__':
             print (" [J]ive")
             while True:
                 firstDance = raw_input("First dance <W/T/V/F/Q/WCS/C/S/R/P/J> or enter 'x' to e[x]it: ")
-                firstDance = firstDance.upper()
+                firstDance = firstDance.upper().strip()
                 if firstDance == 'X':
                     exit()
                 elif firstDance not in ('W', 'T', 'V', 'F', 'Q', 'WCS', 'C', 'S', 'R', 'P', 'J'):
@@ -486,7 +486,7 @@ if __name__ == '__main__':
         print
         while True:
             continueYN = raw_input("At end of first playlist.  Play a line dance <Y/N>: ")
-            continueYN = continueYN.upper()
+            continueYN = continueYN.upper().strip()
             if continueYN not in ('Y', 'N'):
                 print "Unrecognized input.  Try again."
             else:
@@ -499,7 +499,7 @@ if __name__ == '__main__':
             print
             while True:
                 continueYN = raw_input("Begin another playlist starting with Waltz <Y/N>: ")
-                continueYN = continueYN.upper()
+                continueYN = continueYN.upper().strip()
                 if continueYN not in ('Y', 'N'):
                     print "Unrecognized input.  Try again."
                 else:
