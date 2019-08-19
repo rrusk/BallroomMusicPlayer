@@ -90,8 +90,8 @@ longest_song = 210.0  # only use music less than or equal to 3m30s
 
 def getMusicDir():
     home = os.path.expanduser("~")
-    return os.path.join(home, u"Music")  # Make sure filenames are utf-8 encoded
-    # return os.path.join(home, u"Music", u"Creena")
+    #return os.path.join(home, u"Music")  # Make sure filenames are utf-8 encoded
+    return os.path.join(home, u"Music", u"Creena")
     # return os.path.join(home, u"Downloads", u"Music", u"WF")
 
 
@@ -219,6 +219,40 @@ def getIndexDance(theDance):
         idx = i
     return idx
 
+def playing_song(player):
+    if os.name == 'nt':
+        def on_press_reaction(event):
+            if event.name == 'space':
+                player.pause()
+            elif event.name == 'n':
+                player.stop()
+
+        keyboard.on_press(on_press_reaction)
+        while True:
+            if player.is_playing() or player.get_state() == vlc.State.Paused:
+                time.sleep(0.1)  # sleep awhile to reduce CPU usage
+                continue
+            else:
+                break
+    else:
+        with KeyPoller() as keyPoller:
+            while True:
+                c = keyPoller.poll()
+                while keyPoller.poll() is not None:
+                    continue  # discard rest of characters after first
+                if not c is None:
+                    if c == " ":
+                        player.pause()
+                    elif c == "n":
+                        player.stop()
+                    else:
+                        pass
+                if player.is_playing() or player.get_state() == vlc.State.Paused:
+                    time.sleep(1)  # sleep awhile to reduce CPU usage
+                    continue
+                else:
+                    break
+
 
 def play_music(theNumSel, offset, theFirstDance, danceMusic):
     idx = getIndexDance(theFirstDance)
@@ -303,40 +337,7 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
                 numPlayed = numPlayed - 1
                 continue
             time.sleep(3)
-
-            if os.name == 'nt':
-                def on_press_reaction(event):
-                    if event.name == 'space':
-                        player.pause()
-                    elif event.name == 'n':
-                        player.stop()
-
-                keyboard.on_press(on_press_reaction)
-                while True:
-                    if player.is_playing() or player.get_state() == vlc.State.Paused:
-                        time.sleep(0.1)  # sleep awhile to reduce CPU usage
-                        continue
-                    else:
-                        break
-            else:
-                with KeyPoller() as keyPoller:
-                    while True:
-                        c = keyPoller.poll()
-                        while keyPoller.poll() is not None:
-                            continue  # discard rest of characters after first
-                        if not c is None:
-                            if c == " ":
-                                player.pause()
-                            elif c == "n":
-                                player.stop()
-                            else:
-                                pass
-                        if player.is_playing() or player.get_state() == vlc.State.Paused:
-                            time.sleep(1)  # sleep awhile to reduce CPU usage
-                            continue
-                        else:
-                            break
-
+            playing_song(player)
 
 def play_linedance(danceMusic):
     theDance = "LineDance"
@@ -397,39 +398,7 @@ def play_linedance(danceMusic):
         display_exception()
         return
     time.sleep(1)
-    if os.name == 'nt':
-        def on_press_reaction(event):
-            if event.name == 'space':
-                player.pause()
-            elif event.name == 'n':
-                player.stop()
-
-        keyboard.on_press(on_press_reaction)
-        while True:
-            if player.is_playing() or player.get_state() == vlc.State.Paused:
-                time.sleep(0.1)  # sleep awhile to reduce CPU usage
-                continue
-            else:
-                break
-    else:
-        with KeyPoller() as keyPoller:
-            while True:
-                c = keyPoller.poll()
-                while keyPoller.poll() is not None:
-                    continue  # discard rest of characters after first
-                if not c is None:
-                    if c == " ":
-                        player.pause()
-                    elif c == "n":
-                        player.stop()
-                    else:
-                        pass
-                if player.is_playing() or player.get_state() == vlc.State.Paused:
-                    time.sleep(1)  # sleep awhile to reduce CPU usage
-                    continue
-                else:
-                    break
-
+    playing_song(player)
 
 if __name__ == '__main__':
     try:
