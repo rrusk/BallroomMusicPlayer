@@ -38,7 +38,6 @@ else:
     import select
     import termios
 
-
     class KeyPoller():
         def __enter__(self):
             # Save the terminal settings
@@ -219,7 +218,7 @@ def getIndexDance(theDance):
         idx = i
     return idx
 
-def playing_song(player):
+def playing_song(player, song):
     if os.name == 'nt':
         def on_press_reaction(event):
             if event.name == 'space':
@@ -245,6 +244,15 @@ def playing_song(player):
                         player.pause()
                     elif c == "n":
                         player.stop()
+                    elif c == "b":
+                        player.stop()
+                        player = vlc.MediaPlayer(song)
+                        playing = player.play()
+                        if playing == -1:
+                            print "Failed to replay selection."
+                        player.audio_set_volume(100)
+                        time.sleep(1)
+                        playing_song(player, song)
                     else:
                         pass
                 if player.is_playing() or player.get_state() == vlc.State.Paused:
@@ -337,7 +345,7 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
                 numPlayed = numPlayed - 1
                 continue
             time.sleep(3)
-            playing_song(player)
+            playing_song(player, song)
 
 def play_linedance(danceMusic):
     theDance = "LineDance"
@@ -398,7 +406,7 @@ def play_linedance(danceMusic):
         display_exception()
         return
     time.sleep(1)
-    playing_song(player)
+    playing_song(player, song)
 
 if __name__ == '__main__':
     try:
