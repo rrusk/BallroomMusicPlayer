@@ -218,17 +218,57 @@ def getIndexDance(theDance):
         idx = i
     return idx
 
-def playing_song(player, song):
+
+class PlayerWrapper(object):
+    def __init__(self, existing_player):
+        self._vlc_player = existing_player
+
+    def play(self, song, audio_volume=100):
+        self._vlc_player = vlc.MediaPlayer(song)
+        playing = self._vlc_player.play()
+        if playing == -1:
+            print "Failed to play song: {}".format(song)
+        self._vlc_player.audio_set_volume(audio_volume)
+
+    def pause(self):
+        if self._vlc_player:
+            self._vlc_player.pause()
+
+    def stop(self):
+        if self._vlc_player:
+            self._vlc_player.stop()
+
+    def is_playing(self):
+        if self._vlc_player:
+            return self._vlc_player.is_playing()
+
+        return False
+
+    def is_paused(self):
+        if self._vlc_player:
+            return self._vlc_player.get_state() == vlc.State.Paused
+
+        return False
+
+
+def playing_song(player_wrapper, song):
     if os.name == 'nt':
         def on_press_reaction(event):
             if event.name == 'space':
-                player.pause()
+                player_wrapper.pause()
             elif event.name == 'n':
-                player.stop()
+                player_wrapper.stop()
+            elif event.name == 'b':
+                player_wrapper.stop()
+                player_wrapper.play(song, audio_volume=100)
+                time.sleep(1)
+                playing_song(player_wrapper, song)
+            else:
+                pass
 
         keyboard.on_press(on_press_reaction)
         while True:
-            if player.is_playing() or player.get_state() == vlc.State.Paused:
+            if player_wrapper.is_playing() or player_wrapper.is_paused():
                 time.sleep(0.1)  # sleep awhile to reduce CPU usage
                 continue
             else:
@@ -239,23 +279,19 @@ def playing_song(player, song):
                 c = keyPoller.poll()
                 while keyPoller.poll() is not None:
                     continue  # discard rest of characters after first
-                if not c is None:
+                if c is not None:
                     if c == " ":
-                        player.pause()
+                        player_wrapper.pause()
                     elif c == "n":
-                        player.stop()
+                        player_wrapper.stop()
                     elif c == "b":
-                        player.stop()
-                        player = vlc.MediaPlayer(song)
-                        playing = player.play()
-                        if playing == -1:
-                            print "Failed to replay selection."
-                        player.audio_set_volume(100)
+                        player_wrapper.stop()
+                        player_wrapper.play(song, audio_volume=100)
                         time.sleep(1)
-                        playing_song(player, song)
+                        playing_song(player_wrapper, song)
                     else:
                         pass
-                if player.is_playing() or player.get_state() == vlc.State.Paused:
+                if player_wrapper.is_playing() or player_wrapper.is_paused():
                     time.sleep(1)  # sleep awhile to reduce CPU usage
                     continue
                 else:
@@ -345,7 +381,8 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
                 numPlayed = numPlayed - 1
                 continue
             time.sleep(3)
-            playing_song(player, song)
+            playing_song(PlayerWrapper(player), song)
+
 
 def play_linedance(danceMusic):
     theDance = "LineDance"
@@ -406,7 +443,8 @@ def play_linedance(danceMusic):
         display_exception()
         return
     time.sleep(1)
-    playing_song(player, song)
+    playing_song(PlayerWrapper(player), song)
+
 
 if __name__ == '__main__':
     try:
