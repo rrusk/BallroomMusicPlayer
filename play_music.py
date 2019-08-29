@@ -220,8 +220,8 @@ def getIndexDance(theDance):
 
 
 class PlayerWrapper(object):
-    def __init__(self):
-        self._vlc_player = None
+    def __init__(self, existing_player):
+        self._vlc_player = existing_player
 
     def play(self, song, audio_volume=100):
         self._vlc_player = vlc.MediaPlayer(song)
@@ -279,19 +279,19 @@ def playing_song(player_wrapper, song):
                 c = keyPoller.poll()
                 while keyPoller.poll() is not None:
                     continue  # discard rest of characters after first
-                if not c is None:
+                if c is not None:
                     if c == " ":
                         player_wrapper.pause()
                     elif c == "n":
                         player_wrapper.stop()
                     elif c == "b":
                         player_wrapper.stop()
-                        player_wrapper.play(audio_volume=100)
+                        player_wrapper.play(song, audio_volume=100)
                         time.sleep(1)
                         playing_song(player_wrapper, song)
                     else:
                         pass
-                if player_wrapper.is_playing() or player_wrapper.get_state() == vlc.State.Paused:
+                if player_wrapper.is_playing() or player_wrapper.is_paused():
                     time.sleep(1)  # sleep awhile to reduce CPU usage
                     continue
                 else:
