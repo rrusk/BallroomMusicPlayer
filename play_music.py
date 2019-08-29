@@ -253,21 +253,17 @@ class PlayerWrapper(object):
 
 def playing_song(player_wrapper, song):
     if os.name == 'nt':
-        def on_press_reaction(event):
-            if event.name == 'space':
+        while True:
+            if keyboard.is_pressed('space'):
                 player_wrapper.pause()
-            elif event.name == 'n':
+                time.sleep(0.1)
+            elif keyboard.is_pressed('n'):
                 player_wrapper.stop()
-            elif event.name == 'b':
+            elif keyboard.is_pressed('b'):
                 player_wrapper.stop()
                 player_wrapper.play(song, audio_volume=100)
-                time.sleep(1)
+                time.sleep(0.1)
                 playing_song(player_wrapper, song)
-            else:
-                pass
-
-        keyboard.on_press(on_press_reaction)
-        while True:
             if player_wrapper.is_playing() or player_wrapper.is_paused():
                 time.sleep(0.1)  # sleep awhile to reduce CPU usage
                 continue
@@ -331,34 +327,7 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
                 playlist = playlist[1:]
                 numPlayed = 0
         elif dance == "PasoDoble":
-            nextsong = os.path.join(getMusicDir(), dance, "Get Ready for Paso.mp3")
-            if not os.path.isfile(nextsong) or not os.access(nextsong, os.R_OK):
-                print("File {} doesn't exist or isn't readable".format(nextsong))
-            else:
-                player = vlc.MediaPlayer(nextsong)
-                player.audio_set_volume(100)
-                print mediaInfo(player)
-                player.play()
-                time.sleep(17)
-                for level in range(100, 10, -10):
-                    player.audio_set_volume(level)
-                    time.sleep(1)
-                player.stop()
-            try:
-                while True:
-                    skipYN = raw_input("Skip Paso Doble <Y/N>: ").strip()
-                    if skipYN.upper() not in ('Y', 'N'):
-                        print("Unrecognized input.  Enter either 'Y' or 'N'.")
-                    else:
-                        break
-                if skipYN.upper() == 'Y':
-                    numPlayed = theNumSel
-                else:
-                    numPlayed = theNumSel - 1  # play only one Paso Doble
-            except Exception:
-                print("Exception reading input.")
-                display_exception()
-                continue
+            numPlayed = theNumSel - 1
         else:
             numPlayed = 0
 
