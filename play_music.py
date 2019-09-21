@@ -30,6 +30,7 @@ from pyfiglet import Figlet
 from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4
 from mutagen.flac import FLAC
+from mutagen.oggvorbis import OggVorbis
 
 if os.name == "nt":
     import keyboard
@@ -84,13 +85,13 @@ If that isn't true the selection method used in play_linedance will need to be m
 """
 
 shortest_song = 105.0  # only use music greater than of equals to 1m45s
-longest_song = 210.0  # only use music less than or equal to 3m30s
+longest_song = 210.0  # music selections longer than 3m30s are faded out
 
 
 def getMusicDir():
     home = os.path.expanduser("~")
-    #return os.path.join(home, u"Music")  # Make sure filenames are utf-8 encoded
-    return os.path.join(home, u"Music", u"Creena")
+    return os.path.join(home, u"Music")  # Make sure filenames are utf-8 encoded
+    # return os.path.join(home, u"Music", u"Creena")
     # return os.path.join(home, u"Downloads", u"Music", u"WF")
 
 
@@ -123,9 +124,11 @@ def availableMusicByDance():
                             audio = MP4(fullpathname)
                         elif file_extension == ".flac":
                             audio = FLAC(fullpathname)
+                        elif file_extension == ".ogg":
+                            audio = OggVorbis(fullpathname)
                         else:
                             print "Unrecognized file extension for " + fullpathname
-                        if audio.info.length < shortest_song or audio.info.length > longest_song:
+                        if audio.info.length < shortest_song: # or audio.info.length > longest_song:
                             lengthOK = False
                         # if not lengthOK:
                         #     print audio.filename + " is of length " + str(audio.info.length)
@@ -250,23 +253,39 @@ class PlayerWrapper(object):
 
         return False
 
+    def audio_set_volume(self, audio_volume=100):
+        if self._vlc_player:
+            return self._vlc_player.audio_set_volume(audio_volume)
 
-def playing_song(player_wrapper, song):
+        return False
+
+
+def playing_song(player_wrapper, song, max_time=longest_song):
+    timecounter = 0
+    sleep_time = 1 # 1 sec default
     if os.name == 'nt':
+        sleep_time = 0.1
         while True:
             if keyboard.is_pressed('space'):
                 player_wrapper.pause()
-                time.sleep(0.1)
+                time.sleep(sleep_time)
             elif keyboard.is_pressed('n'):
                 player_wrapper.stop()
             elif keyboard.is_pressed('b'):
                 player_wrapper.stop()
                 player_wrapper.play(song, audio_volume=100)
-                time.sleep(0.1)
+                time.sleep(sleep_time)
                 playing_song(player_wrapper, song)
-            if player_wrapper.is_playing() or player_wrapper.is_paused():
-                time.sleep(0.1)  # sleep awhile to reduce CPU usage
-                continue
+            if player_wrapper.is_playing():
+                time.sleep(sleep_time)  # sleep awhile to reduce CPU usage
+                timecounter += sleep_time
+                if timecounter > max_time:
+                    for level in range(100, 10, -10):
+                        player_wrapper.audio_set_volume(level)
+                        time.sleep(1)  # fade in 1 sec intervals over 10 seconds
+                    player_wrapper.stop()
+            elif player_wrapper.is_paused():
+                time.sleep(sleep_time)
             else:
                 break
     else:
@@ -283,13 +302,20 @@ def playing_song(player_wrapper, song):
                     elif c == "b":
                         player_wrapper.stop()
                         player_wrapper.play(song, audio_volume=100)
-                        time.sleep(1)
+                        time.sleep(sleep_time)
                         playing_song(player_wrapper, song)
                     else:
                         pass
-                if player_wrapper.is_playing() or player_wrapper.is_paused():
-                    time.sleep(1)  # sleep awhile to reduce CPU usage
-                    continue
+                if player_wrapper.is_playing():
+                    time.sleep(sleep_time)  # sleep awhile to reduce CPU usage
+                    timecounter += sleep_time
+                    if timecounter > max_time:
+                        for level in range(100, 10, -10):
+                            player_wrapper.audio_set_volume(level)
+                            time.sleep(1) # fade in 1 sec intervals over 10 seconds
+                        player_wrapper.stop()
+                elif player_wrapper.is_paused():
+                    time.sleep(sleep_time)
                 else:
                     break
 
@@ -350,7 +376,10 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
                 numPlayed = numPlayed - 1
                 continue
             time.sleep(3)
-            playing_song(PlayerWrapper(player), song)
+            if dance == "VienneseWaltz":
+                playing_song(PlayerWrapper(player), song, 150)
+            else:
+                playing_song(PlayerWrapper(player), song)
 
 
 def play_linedance(danceMusic):
