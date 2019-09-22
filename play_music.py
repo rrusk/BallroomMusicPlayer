@@ -378,6 +378,9 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
             time.sleep(3)
             if dance == "VienneseWaltz":
                 playing_song(PlayerWrapper(player), song, 150)
+            elif dance == "PasoDoble":
+                time.sleep(15) # dancers time to get ready
+                playing_song(PlayerWrapper(player), song)
             else:
                 playing_song(PlayerWrapper(player), song)
 
