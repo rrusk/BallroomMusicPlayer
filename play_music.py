@@ -26,6 +26,8 @@ import time
 
 import vlc
 from pyfiglet import Figlet
+# if os.name != "nt": # pyttsx3 depends on pywin32 which causes problems
+#     import pyttsx3
 
 from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4
@@ -60,6 +62,8 @@ else:
             if not dr == []:
                 return sys.stdin.read(1)
             return None
+
+script_path = os.path.dirname(os.path.abspath(__file__))
 
 """
 The ballroom dance music is assumed to be organized so that the music
@@ -319,6 +323,30 @@ def playing_song(player_wrapper, song, max_time=longest_song):
                 else:
                     break
 
+# def announce_dance(dance):
+#     if os.name != 'nt':
+#         announce = pyttsx3.init()
+#         announce.setProperty('volume',1.0)
+#         announce.say('  Please get ready for ' + dance)
+#         announce.runAndWait()
+#         announce.stop()
+
+def announce_dance(dance):
+    announce = os.path.join(script_path,'announce',dance+'.mp3')
+    try:
+        player = vlc.MediaPlayer(announce)
+        player.audio_set_volume(100)
+        playing = player.play()
+        time.sleep(1)
+        if playing == -1:
+            print "Failed to announce " + dance
+        while player.is_playing():
+            time.sleep(0.1)
+            continue
+    except Exception:
+        print "*** Exception occurred ***"
+        display_exception()
+    print announce
 
 def play_music(theNumSel, offset, theFirstDance, danceMusic):
     idx = getIndexDance(theFirstDance)
@@ -326,7 +354,9 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
         print(" Dance not found!!!")
         raw_input("Hit carriage return to exit and rerun program.")
         exit()
+
     myFig = Figlet(font='standard')
+
     dances = getDances()
     for i in range(idx, len(dances)):
         dance = dances[i]
@@ -335,6 +365,7 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
         if dance == "PasoDoble" and theNumSel == 1:
             continue  # skip Paso when playing only one selection per dance
         print myFig.renderText(dance)
+        announce_dance(dance)
 
         if theNumSel + offset > len(danceMusic[i]):
             print("There are fewer than " + str(theNumSel + offset) + " selections in the "
