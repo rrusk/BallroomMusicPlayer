@@ -1,1 +1,2 @@
-The mp3 files generated with announce_dance.py have 3 seconds of silence prepended to then using Audacity so they play reliably on Windows.
+The announcements were created with announce_dance.py. Two seconds of silence was added to the beginning
+and two seconds of silence to the end of the announcement with add_silence.sh.

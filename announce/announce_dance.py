@@ -14,12 +14,18 @@ for dance in dances:
         dance_announced = "Cha Cha"
     else:
         dance_announced = dance
-    tts_en = gTTS('Please get ready for ' + dance_announced, lang='en')
+    tts_en1 = gTTS('  Please get ready for ' + dance_announced, lang='en')
+    tts_en2 = gTTS('  Be ready with your partner for ' + dance_announced, lang='en')
     with open(dance+'.mp3', 'wb') as f:
-        tts_en.write_to_fp(f)
+        tts_en1.write_to_fp(f)
+        tts_en2.write_to_fp(f)
 #
-tts_en = gTTS('Please get ready for ', lang='en')
-tts_fr = gTTS('Paso Doble', lang='es')
+tts_en1 = gTTS('Please get ready for ', lang='en')
+tts_fr1 = gTTS('Paso Doble', lang='es')
+tts_en2 = gTTS('Be ready with your partner for ', lang='en')
+tts_fr2 = gTTS('Paso Doble', lang='es')
 with open('PasoDoble.mp3', 'wb') as f:
-    tts_en.write_to_fp(f)
-    tts_fr.write_to_fp(f)
+    tts_en1.write_to_fp(f)
+    tts_fr1.write_to_fp(f)
+    tts_en2.write_to_fp(f)
+    tts_fr2.write_to_fp(f)
