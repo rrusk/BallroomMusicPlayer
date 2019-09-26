@@ -21,11 +21,11 @@ for dance in dances:
         tts_en2.write_to_fp(f)
 #
 tts_en1 = gTTS('Please get ready for ', lang='en')
-tts_fr1 = gTTS('Paso Doble', lang='es')
+tts_es1 = gTTS('Paso Doble', lang='es')
 tts_en2 = gTTS('Be ready with your partner for ', lang='en')
-tts_fr2 = gTTS('Paso Doble', lang='es')
+tts_es2 = gTTS('Paso Doble', lang='es')
 with open('PasoDoble.mp3', 'wb') as f:
     tts_en1.write_to_fp(f)
-    tts_fr1.write_to_fp(f)
+    tts_es1.write_to_fp(f)
     tts_en2.write_to_fp(f)
-    tts_fr2.write_to_fp(f)
+    tts_es2.write_to_fp(f)
