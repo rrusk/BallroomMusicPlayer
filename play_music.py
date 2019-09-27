@@ -63,6 +63,15 @@ else:
                 return sys.stdin.read(1)
             return None
 
+def flush_input():
+    try:
+        import msvcrt
+        while msvcrt.kbhit():
+            msvcrt.getch()
+    except ImportError:
+        import sys, termios
+        termios.tcflush(sys.stdin, termios.TCIOFLUSH)
+
 script_path = os.path.dirname(os.path.abspath(__file__))
 
 """
@@ -346,7 +355,7 @@ def announce_dance(dance):
     except Exception:
         print "*** Exception occurred ***"
         display_exception()
-    print announce
+    #print announce
 
 def play_music(theNumSel, offset, theFirstDance, danceMusic):
     idx = getIndexDance(theFirstDance)
@@ -444,6 +453,7 @@ def play_linedance(danceMusic):
     for i in range(len(selection)):
         selectionStr = selectionStr + selection[i] + "/"
     selectionStr = selectionStr[:-1] + "> or enter 'n' for [n]one: "
+    flush_input()
     while True:
         lineDance = raw_input(selectionStr).strip()
         lineDance = lineDance.upper()
@@ -531,6 +541,7 @@ if __name__ == '__main__':
 
         # Line dance played after first playlist ends
         print
+        flush_input()
         while True:
             continueYN = raw_input("At end of first playlist.  Play a line dance <Y/N>: ")
             continueYN = continueYN.upper().strip()
@@ -542,6 +553,7 @@ if __name__ == '__main__':
             play_linedance(musicLists)
 
         repetitions = 0
+        flush_input()
         while True:
             print
             while True:
