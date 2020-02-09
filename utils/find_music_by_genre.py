@@ -7,6 +7,7 @@ import os
 import re
 import sys
 from shutil import copyfile
+from datetime import datetime
 
 import vlc
 
@@ -58,5 +59,9 @@ for root, dirs, files in os.walk(src):
             s = s+ext
             #print(song)
             song2 = os.path.join(dst, s)
+            if os.path.exists(song2):
+                print("Filename collision for " + song2)
+                print("Will append timestamp to this copy to make it unique.")
+                song2 = song2+"."+str(datetime.now()).replace(" ","_")
             #print(song2)
             copyfile(song,song2)
