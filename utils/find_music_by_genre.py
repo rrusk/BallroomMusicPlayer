@@ -14,9 +14,9 @@ import vlc
 if len(sys.argv) != 3:
     print()
     print("Usage:", sys.argv[0], "<source_directory> <dest_directory")
-    print("  where <directory> is the folder you want to search for files by musical genre.")
-    print("  Will check all files and directories in <directory> and its subdirectories.")
-    print("  Musical selections will be copied to destination directory with a filename")
+    print("  where <source_directory> is the folder you want to search for files by musical genre.")
+    print("  Will check all files and directories in <source_directory> and its subdirectories.")
+    print("  Musical selections will be copied to the destination directory with a filename")
     print("  created by concatenating genre, album name, title and artist.")
     print()
     exit()
