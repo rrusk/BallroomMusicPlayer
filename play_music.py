@@ -21,6 +21,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 import os
+os.add_dll_directory(r'C:\Program Files\VideoLAN\VLC')
 import random
 import time
 
