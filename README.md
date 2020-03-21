@@ -6,21 +6,23 @@ bindings API documentation is at
 https://www.olivieraubert.net/vlc/python-ctypes/doc/.
 
 Tested on Ubuntu 18.04, 14.04 and 64-bit Windows 7, 8.1, 10 with
-python 2.7.15.
+64-bit versions of Python 2.7.15 and Python 3.8.2.  Use the 2to3 branch
+with Python 3.  Also, for Windows with Python 3.8+, the location of the
+libvlc.dll file must be specified.  See the comment near the top of the
+play_music.py script.
 
 If using Ubuntu, install vlc using 'sudo apt install vlc'.  Then
-install python-vlc using 'pip install python-vlc'.  FIGlet is used for
-dance banners; install pyfiglet using `pip install pyfiglet'. Mutagen
+install python-vlc using 'pip install python-vlc'.  For Python 3 you
+may need to use pip3.  FIGlet is used for dance banners;
+install pyfiglet using `pip install pyfiglet'. Mutagen
 is used to determine the length of musical selections.  Install it
 using `pip install mutagen`.
 
 If using Windows, install the 64-bit version of VLC from
-https://www.videolan.org/vlc/ and the latest 64-bit Python 2.7 release
-from https://www.python.org/downloads/windows/.  Make sure Python is
-added to your path during installation. (It is the last item in the
-"Customize Python 2.7.15" list. Select "Entire feature will be
-installed on local hard drive".) Then open a Command Prompt window and
-enter:
+https://www.videolan.org/vlc/ and the latest 64-bit Python 2 or 3 release
+from https://www.python.org/downloads/windows/.  Do a custom installation,
+for all users and make sure Python is added to your path during installation.
+Then open a Command Prompt window and enter:
 <pre>
 pip install python-vlc pyfiglet windows-curses keyboard mutagen
 </pre>

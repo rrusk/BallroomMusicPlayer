@@ -21,7 +21,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 import os
-os.add_dll_directory(r'C:\Program Files\VideoLAN\VLC')
+
+## This hard-coded folder path needs to match where the libvlc.dll file is actually located
+if os.name == "nt":
+    os.add_dll_directory(r'C:\Program Files\VideoLAN\VLC')
+
 import random
 import time
 
