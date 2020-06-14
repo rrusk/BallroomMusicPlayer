@@ -141,6 +141,7 @@ def availableMusicByDance():
                     fullpathname = os.path.join(dirpath, name)
                     filename, file_extension = os.path.splitext(fullpathname)
                     lengthOK = True
+                    file_extension = file_extension.lower()
                     try:
                         if file_extension == ".mp3":
                             audio = MP3(fullpathname)
