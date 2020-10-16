@@ -109,19 +109,19 @@ If that isn't true the selection method used in play_linedance will need to be m
 """
 
 shortest_song = 105.0  # only use music greater than of equals to 1m45s
-longest_song = 210.0  # music selections longer than 3m30s are faded out
-
+# longest_song = 210.0  # music selections longer than 3m30s are faded out
+longest_song = 180.0  # music selections longer than 3m00s are faded out
 
 def getMusicDir():
     home = os.path.expanduser("~")
-    return os.path.join(home, "Music")  # Make sure filenames are utf-8 encoded
-    # return os.path.join(home, u"Music", u"Creena")
-    # return os.path.join(home, u"Downloads", u"Music", u"WF")
-
+    #return os.path.join(home, "Music")  # Make sure filenames are utf-8 encoded
+    return os.path.join(home,"Music/Music_Pre20200719/Creena")
 
 def getDances():
+    # dances = ["Waltz", "Tango", "VienneseWaltz", "Foxtrot", "QuickStep", "WCS",
+    #           "ChaCha", "Samba", "Rumba", "PasoDoble", "Jive", "LineDance"]
     dances = ["Waltz", "Tango", "VienneseWaltz", "Foxtrot", "QuickStep", "WCS",
-              "ChaCha", "Samba", "Rumba", "PasoDoble", "Jive", "LineDance"]
+              "Samba", "ChaCha", "Rumba", "Jive", "LineDance"]
     return dances
 
 
@@ -401,11 +401,12 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
 
         if dance == "Waltz":
             if offset == 0:  # at beginning of practice session
-                print("[Waltz will have an extra selection for volume adjustment]")
-                numPlayed = -1
+                # print("[Waltz will have an extra selection for volume adjustment]")
+                # numPlayed = -1
+                numPlayed = 0
             else:  # on second or later sessions
                 # volume adjustment increased number previously selected for Waltz by 1
-                playlist = playlist[1:]
+                # playlist = playlist[1:]
                 numPlayed = 0
         elif dance == "PasoDoble":
             numPlayed = theNumSel - 1
@@ -432,10 +433,10 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
                 continue
             time.sleep(3)
             if dance == "VienneseWaltz":
-                playing_song(PlayerWrapper(player), song, 150)
-            elif dance == "PasoDoble":
-                # time.sleep(15) # dancers time to get ready
-                playing_song(PlayerWrapper(player), song)
+                playing_song(PlayerWrapper(player), song, 120)
+            # elif dance == "PasoDoble":
+            #     # time.sleep(15) # dancers time to get ready
+            #     playing_song(PlayerWrapper(player), song)
             else:
                 playing_song(PlayerWrapper(player), song)
 
@@ -514,58 +515,58 @@ if __name__ == '__main__':
         musicLists = randomizeMusicByDance(theMusic)
         if not validMusicLists(musicLists):
             print("Potential issues with playlist.  Continuing but there may be problems...")
-
-        defaultsYN = input("Play two selections per dance starting with Waltz <Y/N>: ").strip()
-        if defaultsYN == 'N' or defaultsYN == 'n':
-            while True:
-                numSel = input("Enter number of selections to play per dance: ").strip()
-                if numSel.lower() == 'q':
-                    exit()
-                try:
-                    numSel = int(numSel)
-                    break
-                except ValueError:
-                    print("The input must be an integer.  Please try again or enter 'q' to exit.")
-
-            print ("First dance?")
-            print (" [W]altz")
-            print (" [T]ango")
-            print (" [V]iennese Waltz")
-            print (" [F]oxtrot")
-            print (" [Q]uickstep")
-            print (" [WCS]")
-            print (" [C]ha Cha")
-            print (" [S]amba")
-            print (" [R]umba")
-            print (" [P]aso Doble")
-            print (" [J]ive")
-            while True:
-                firstDance = input("First dance <W/T/V/F/Q/WCS/C/S/R/P/J> or enter 'x' to e[x]it: ")
-                firstDance = firstDance.upper().strip()
-                if firstDance == 'X':
-                    exit()
-                elif firstDance not in ('W', 'T', 'V', 'F', 'Q', 'WCS', 'C', 'S', 'R', 'P', 'J'):
-                    print("Unrecognized dance selection.  Please try again.")
-                else:
-                    break
-        else:
-            numSel = 2
-            firstDance = 'W'
+        input("Press carriage return on keyboard to begin...")
+        # defaultsYN = input("Play two selections per dance starting with Waltz <Y/N>: ").strip()
+        # if defaultsYN == 'N' or defaultsYN == 'n':
+        #     while True:
+        #         numSel = input("Enter number of selections to play per dance: ").strip()
+        #         if numSel.lower() == 'q':
+        #             exit()
+        #         try:
+        #             numSel = int(numSel)
+        #             break
+        #         except ValueError:
+        #             print("The input must be an integer.  Please try again or enter 'q' to exit.")
+        #
+        #     print ("First dance?")
+        #     print (" [W]altz")
+        #     print (" [T]ango")
+        #     print (" [V]iennese Waltz")
+        #     print (" [F]oxtrot")
+        #     print (" [Q]uickstep")
+        #     print (" [WCS]")
+        #     print (" [C]ha Cha")
+        #     print (" [S]amba")
+        #     print (" [R]umba")
+        #     print (" [P]aso Doble")
+        #     print (" [J]ive")
+        #     while True:
+        #         firstDance = input("First dance <W/T/V/F/Q/WCS/C/S/R/P/J> or enter 'x' to e[x]it: ")
+        #         firstDance = firstDance.upper().strip()
+        #         if firstDance == 'X':
+        #             exit()
+        #         elif firstDance not in ('W', 'T', 'V', 'F', 'Q', 'WCS', 'C', 'S', 'R', 'P', 'J'):
+        #             print("Unrecognized dance selection.  Please try again.")
+        #         else:
+        #             break
+        # else:
+        numSel = 2
+        firstDance = 'W'
         clearScreen()
         play_music(numSel, 0, firstDance, musicLists)
 
-        # Line dance played after first playlist ends
-        print()
-        flush_input()
-        while True:
-            continueYN = input("At end of first playlist.  Play a line dance <Y/N>: ")
-            continueYN = continueYN.upper().strip()
-            if continueYN not in ('Y', 'N'):
-                print("Unrecognized input.  Try again.")
-            else:
-                break
-        if continueYN == 'Y':
-            play_linedance(musicLists)
+        # # Line dance played after first playlist ends
+        # print()
+        # flush_input()
+        # while True:
+        #     continueYN = input("At end of first playlist.  Play a line dance <Y/N>: ")
+        #     continueYN = continueYN.upper().strip()
+        #     if continueYN not in ('Y', 'N'):
+        #         print("Unrecognized input.  Try again.")
+        #     else:
+        #         break
+        # if continueYN == 'Y':
+        #     play_linedance(musicLists)
 
         repetitions = 0
         flush_input()
