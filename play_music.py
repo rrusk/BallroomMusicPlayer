@@ -116,7 +116,7 @@ longest_song = 210.0  # music selections longer than 3m30s are faded out
 
 def getMusicDir():
     home = os.path.expanduser("~")
-    return os.path.join(home, "Music", "VBDS_watson", "mp3")  # Make sure filenames are utf-8 encoded
+    return os.path.join(home, "Music", "VBDS", "mp3")  # Make sure filenames are utf-8 encoded
     # return os.path.join(home, u"Music", u"Creena")
     # return os.path.join(home, u"Downloads", u"Music", u"WF")
 
