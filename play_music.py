@@ -413,6 +413,8 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
             numPlayed = theNumSel - 1
         elif dance in ("VWSlow", "VienneseWaltz", "JSlow", "Jive"):
             numPlayed = theNumSel/2
+        elif dance == "WCS" and theNumSel > 2:
+            numPlayed = theNumSel/2
         else:
             numPlayed = 0
 
