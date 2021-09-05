@@ -93,6 +93,7 @@ $HOME/Music/
 |--- ChaCha
 |--- Foxtrot
 |--- Jive
+|--- JSlow
 |--- LineDance
 |--- PasoDoble
 |--- QuickStep
@@ -100,6 +101,7 @@ $HOME/Music/
 |--- Samba
 |--- Tango
 |--- VienneseWaltz
+|--- VWSlow
 |--- Waltz
 |--- WCS
 
@@ -114,14 +116,14 @@ longest_song = 210.0  # music selections longer than 3m30s are faded out
 
 def getMusicDir():
     home = os.path.expanduser("~")
-    return os.path.join(home, "Music")  # Make sure filenames are utf-8 encoded
+    return os.path.join(home, "Music", "VBDS_watson", "mp3")  # Make sure filenames are utf-8 encoded
     # return os.path.join(home, u"Music", u"Creena")
     # return os.path.join(home, u"Downloads", u"Music", u"WF")
 
 
 def getDances():
-    dances = ["Waltz", "Tango", "VienneseWaltz", "Foxtrot", "QuickStep", "WCS",
-              "ChaCha", "Samba", "Rumba", "PasoDoble", "Jive", "LineDance"]
+    dances = ["Waltz", "Tango", "VWSlow", "VienneseWaltz", "Foxtrot", "QuickStep", "WCS",
+              "ChaCha", "Samba", "Rumba", "PasoDoble", "JSlow", "Jive", "LineDance"]
     return dances
 
 
@@ -409,6 +411,8 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
                 numPlayed = 0
         elif dance == "PasoDoble":
             numPlayed = theNumSel - 1
+        elif dance in ("VWSlow", "VienneseWaltz", "JSlow", "Jive"):
+            numPlayed = theNumSel/2
         else:
             numPlayed = 0
 
@@ -530,6 +534,7 @@ if __name__ == '__main__':
             print ("First dance?")
             print (" [W]altz")
             print (" [T]ango")
+            print (" [VWS]low")
             print (" [V]iennese Waltz")
             print (" [F]oxtrot")
             print (" [Q]uickstep")
@@ -538,13 +543,14 @@ if __name__ == '__main__':
             print (" [S]amba")
             print (" [R]umba")
             print (" [P]aso Doble")
+            print (" [JS]low")
             print (" [J]ive")
             while True:
-                firstDance = input("First dance <W/T/V/F/Q/WCS/C/S/R/P/J> or enter 'x' to e[x]it: ")
+                firstDance = input("First dance <W/T/VWS/V/F/Q/WCS/C/S/R/P/JS/J> or enter 'x' to e[x]it: ")
                 firstDance = firstDance.upper().strip()
                 if firstDance == 'X':
                     exit()
-                elif firstDance not in ('W', 'T', 'V', 'F', 'Q', 'WCS', 'C', 'S', 'R', 'P', 'J'):
+                elif firstDance not in ('W', 'T', 'VWS', 'V', 'F', 'Q', 'WCS', 'C', 'S', 'R', 'P', 'JS', 'J'):
                     print("Unrecognized dance selection.  Please try again.")
                 else:
                     break
