@@ -116,14 +116,12 @@ longest_song = 210.0  # music selections longer than 3m30s are faded out
 
 def getMusicDir():
     home = os.path.expanduser("~")
-    return os.path.join(home, "Music", "VBDS", "mp3")  # Make sure filenames are utf-8 encoded
-    # return os.path.join(home, u"Music", u"Creena")
-    # return os.path.join(home, u"Downloads", u"Music", u"WF")
-
+    return os.path.join(home, "Music")  # Make sure filenames are utf-8 encoded
+    #return os.path.join(home, "Music", "VBDS")
 
 def getDances():
     dances = ["Waltz", "Tango", "VWSlow", "VienneseWaltz", "Foxtrot", "QuickStep", "WCS",
-              "ChaCha", "Samba", "Rumba", "PasoDoble", "JSlow", "Jive", "LineDance"]
+              "Samba", "ChaCha", "Rumba", "PasoDoble", "JSlow", "Jive", "LineDance"]
     return dances
 
 
@@ -541,18 +539,18 @@ if __name__ == '__main__':
             print (" [F]oxtrot")
             print (" [Q]uickstep")
             print (" [WCS]")
-            print (" [C]ha Cha")
             print (" [S]amba")
+            print (" [C]ha Cha")
             print (" [R]umba")
             print (" [P]aso Doble")
             print (" [JS]low")
             print (" [J]ive")
             while True:
-                firstDance = input("First dance <W/T/VWS/V/F/Q/WCS/C/S/R/P/JS/J> or enter 'x' to e[x]it: ")
+                firstDance = input("First dance <W/T/VWS/V/F/Q/WCS/S/C/R/P/JS/J> or enter 'x' to e[x]it: ")
                 firstDance = firstDance.upper().strip()
                 if firstDance == 'X':
                     exit()
-                elif firstDance not in ('W', 'T', 'VWS', 'V', 'F', 'Q', 'WCS', 'C', 'S', 'R', 'P', 'JS', 'J'):
+                elif firstDance not in ('W', 'T', 'VWS', 'V', 'F', 'Q', 'WCS', 'S', 'C', 'R', 'P', 'JS', 'J'):
                     print("Unrecognized dance selection.  Please try again.")
                 else:
                     break
