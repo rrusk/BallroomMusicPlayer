@@ -5,7 +5,7 @@ dances = ["Waltz", "Tango", "VWSlow", "VienneseWaltz", "Foxtrot", "QuickStep", "
               "ChaCha", "Samba", "Rumba", "JSlow", "Jive"]
 for dance in dances:
     if dance == "VWSlow":
-        dance_announced = "Slow Viennese Waltz"
+        dance_announced = "A Slow Tempo Viennese Waltz"
     elif dance == "VienneseWaltz":
         dance_announced = "Viennese Waltz"
     elif dance == "QuickStep":
@@ -15,7 +15,7 @@ for dance in dances:
     elif dance == "ChaCha":
         dance_announced = "Cha Cha"
     elif dance == "JSlow":
-        dance_announced = "Slow Jive"
+        dance_announced = "A Slow Tempo Jive"
     else:
         dance_announced = dance
     tts_en1 = gTTS('  Please get ready for ' + dance_announced, lang='en')
