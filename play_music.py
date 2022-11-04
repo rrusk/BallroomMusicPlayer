@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Copyright (c) 2018 [Raymond Rusk <rusk.raymond@gmail.com>]
 
@@ -463,7 +463,9 @@ def play_linedance(danceMusic):
         infoStr.append(mediaInfo(player))
         player.stop()
         selection.append(infoStr[i][0])
-        print(selection[i] + ": " + infoStr[i])
+        infoStrLen=len(infoStr[i])
+        printStrLen=min(infoStrLen,36)
+        print(selection[i] + ": " + infoStr[i][0:printStrLen-1])
     selectionStr = "Which Line Dance <"
     for i in range(len(selection)):
         selectionStr = selectionStr + selection[i] + "/"
