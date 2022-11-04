@@ -121,7 +121,7 @@ def getMusicDir():
 
 def getDances():
     dances = ["Waltz", "Tango", "VienneseWaltz", "Foxtrot", "QuickStep", "WCS",
-              "ChaCha", "Samba", "Rumba", "PasoDoble", "Jive", "LineDance"]
+              "Samba", "ChaCha", "Rumba", "PasoDoble", "Jive", "LineDance"]
     return dances
 
 
@@ -534,17 +534,17 @@ if __name__ == '__main__':
             print (" [F]oxtrot")
             print (" [Q]uickstep")
             print (" [WCS]")
-            print (" [C]ha Cha")
             print (" [S]amba")
+            print (" [C]ha Cha")
             print (" [R]umba")
             print (" [P]aso Doble")
             print (" [J]ive")
             while True:
-                firstDance = input("First dance <W/T/V/F/Q/WCS/C/S/R/P/J> or enter 'x' to e[x]it: ")
+                firstDance = input("First dance <W/T/V/F/Q/WCS/S/C/R/P/J> or enter 'x' to e[x]it: ")
                 firstDance = firstDance.upper().strip()
                 if firstDance == 'X':
                     exit()
-                elif firstDance not in ('W', 'T', 'V', 'F', 'Q', 'WCS', 'C', 'S', 'R', 'P', 'J'):
+                elif firstDance not in ('W', 'T', 'V', 'F', 'Q', 'WCS', 'S', 'C', 'R', 'P', 'J'):
                     print("Unrecognized dance selection.  Please try again.")
                 else:
                     break
