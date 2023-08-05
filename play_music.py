@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Copyright (c) 2018 [Raymond Rusk <rusk.raymond@gmail.com>]
 
@@ -407,12 +407,12 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
                 # volume adjustment increased number previously selected for Waltz by 1
                 playlist = playlist[1:]
                 numPlayed = 0
-        elif dance == "PasoDoble":
+        elif dance == "PasoDoble": # play at most one Paso Doble
             numPlayed = theNumSel - 1
-        elif dance in ("VWSlow", "VienneseWaltz", "JSlow", "Jive") and theNumSel > 1:
-            numPlayed = theNumSel/2
-        elif dance == "WCS" and theNumSel > 2:
-            numPlayed = theNumSel/2
+        elif dance in ("VWSlow", "VienneseWaltz", "JSlow") and theNumSel > 1: # play only one of these dances
+            numPlayed = theNumSel - 1
+        elif dance in ("WCS", "Jive") and theNumSel > 2: # play only two of these dances
+            numPlayed = theNumSel-2
         else:
             numPlayed = 0
 
@@ -467,7 +467,9 @@ def play_linedance(danceMusic):
         infoStr.append(mediaInfo(player))
         player.stop()
         selection.append(infoStr[i][0])
-        print(selection[i] + ": " + infoStr[i])
+        infoStrLen=len(infoStr[i])
+        printStrLen=min(infoStrLen,36)
+        print(selection[i] + ": " + infoStr[i][0:printStrLen-1])
     selectionStr = "Which Line Dance <"
     for i in range(len(selection)):
         selectionStr = selectionStr + selection[i] + "/"
