@@ -120,8 +120,9 @@ def getMusicDir():
     #return os.path.join(home, "Music", "VBDS")
 
 def getDances():
-    dances = ["Waltz", "Tango", "VWSlow", "VienneseWaltz", "Foxtrot", "QuickStep", "WCS",
-              "Samba", "ChaCha", "Rumba", "PasoDoble", "JSlow", "Jive", "LineDance"]
+    # dances = ["Waltz", "Tango", "VWSlow", "VienneseWaltz", "Foxtrot", "QuickStep", "WCS",
+    #           "Samba", "ChaCha", "Rumba", "PasoDoble", "JSlow", "Jive", "LineDance"]
+    dances = ["Waltz", "Tango", "Foxtrot", "ChaCha", "Rumba", "JSlow", "LineDance"]
     return dances
 
 
@@ -409,8 +410,8 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
                 numPlayed = 0
         elif dance == "PasoDoble": # play at most one Paso Doble
             numPlayed = theNumSel - 1
-        elif dance in ("VWSlow", "VienneseWaltz", "JSlow") and theNumSel > 1: # play only one of these dances
-            numPlayed = theNumSel - 1
+        # elif dance in ("VWSlow", "VienneseWaltz", "JSlow") and theNumSel > 1: # play only one of these dances
+        #     numPlayed = theNumSel - 1
         elif dance in ("WCS", "Jive") and theNumSel > 2: # play only two of these dances
             numPlayed = theNumSel-2
         else:
