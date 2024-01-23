@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Ballroom Music Player
+Exec=/usr/bin/python3.10 /home/vbds/BallroomMusicPlayer/play_music.py
+Terminal=true
+Type=Application
+Icon=/home/vbds/BallroomMusicPlayer/play.png
