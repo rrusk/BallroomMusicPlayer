@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Power Off
+Exec=/usr/sbin/poweroff
+Terminal=false
+Type=Application
+Icon=/home/vbds/BallroomMusicPlayer/icons/power-off.png
