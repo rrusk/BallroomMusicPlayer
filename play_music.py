@@ -220,11 +220,12 @@ def mediaInfo(player):
     media = player.get_media()
     if media is not None:
         media.parse()
+        genre = media.get_meta(vlc.Meta.Genre) or "Unknown Genre"
         title = media.get_meta(vlc.Meta.Title) or "Unknown song; title"
         artist = media.get_meta(vlc.Meta.Artist) or "Unknown artist"
         album = media.get_meta(vlc.Meta.Album) or "Unknown album"
         try:
-            return "{:<60}  {:<20}  {:<20}".format(title,artist,album)
+            return "{:<20} {:<60}  {:<20}  {:<20}".format(genre, title,artist,album)
         except UnicodeEncodeError: # Python 2 environment
             return "{:<60}  {:<20}  {:<20}".format(title.encode('ascii', 'ignore'),
                                                    artist.encode('ascii', 'ignore'),
