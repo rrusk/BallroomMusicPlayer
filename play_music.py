@@ -120,8 +120,8 @@ def getMusicDir():
     #return os.path.join(home, "Music", "VBDS")
 
 def getDances():
-    dances = ["Waltz", "Tango", "VWSlow", "VienneseWaltz", "Foxtrot", "QuickStep", "WCS",
-              "Samba", "ChaCha", "Rumba", "PasoDoble", "JSlow", "Jive", "LineDance"]
+    dances = ["Waltz", "JSlow", "Jive", "Rumba", "Foxtrot", "ChaCha", "Tango",
+              "Samba", "QuickStep", "VWSlow", "VienneseWaltz", "WCS", "LineDance"]
     return dances
 
 
@@ -225,7 +225,7 @@ def mediaInfo(player):
         artist = media.get_meta(vlc.Meta.Artist) or "Unknown artist"
         album = media.get_meta(vlc.Meta.Album) or "Unknown album"
         try:
-            return "{:<20} {:<60}  {:<20}  {:<20}".format(genre, title,artist,album)
+            return "{:<60}  {:<20} {:<20}  {:<20}".format(title,genre,artist,album)
         except UnicodeEncodeError: # Python 2 environment
             return "{:<60}  {:<20}  {:<20}".format(title.encode('ascii', 'ignore'),
                                                    artist.encode('ascii', 'ignore'),
@@ -410,10 +410,10 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
                 numPlayed = 0
         elif dance == "PasoDoble": # play at most one Paso Doble
             numPlayed = theNumSel - 1
-        elif dance in ("VWSlow", "VienneseWaltz", "JSlow") and theNumSel > 1: # play only one of these dances
-            numPlayed = theNumSel - 1
-        elif dance in ("WCS", "Jive") and theNumSel > 2: # play only two of these dances
-            numPlayed = theNumSel-2
+        elif dance in ("VWSlow", "VienneseWaltz", "JSlow") and theNumSel > 1:
+            numPlayed = theNumSel/2
+        elif dance in ("WCS") and theNumSel > 2:
+            numPlayed = theNumSel/2
         else:
             numPlayed = 0
 
