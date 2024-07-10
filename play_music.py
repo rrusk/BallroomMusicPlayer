@@ -410,10 +410,10 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
                 numPlayed = 0
         elif dance == "PasoDoble": # play at most one Paso Doble
             numPlayed = theNumSel - 1
-        elif dance in ("VWSlow", "VienneseWaltz", "JSlow") and theNumSel > 1:
-            numPlayed = theNumSel/2
+        elif dance in ("VWSlow", "VienneseWaltz", "JSlow", "Jive") and theNumSel > 1:
+            numPlayed = theNumSel//2
         elif dance in ("WCS") and theNumSel > 2:
-            numPlayed = theNumSel/2
+            numPlayed = theNumSel//2
         else:
             numPlayed = 0
 
