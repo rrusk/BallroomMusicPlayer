@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 Copyright (c) 2018 [Raymond Rusk <rusk.raymond@gmail.com>]
 
@@ -93,17 +93,9 @@ $HOME/Music/
 |--- ChaCha
 |--- Foxtrot
 |--- Jive
-|--- JSlow
-|--- LineDance
-|--- PasoDoble
-|--- QuickStep
 |--- Rumba
-|--- Samba
 |--- Tango
-|--- VienneseWaltz
-|--- VWSlow
 |--- Waltz
-|--- WCS
 
 The line dance selection method used in play_linedance() depends on the title of each line
 dance starting with a different character than the first character of all the other line dances.
@@ -120,8 +112,8 @@ def getMusicDir():
     #return os.path.join(home, "Music", "VBDS")
 
 def getDances():
-    dances = ["Waltz", "JSlow", "Jive", "Rumba", "Foxtrot", "ChaCha", "Tango",
-              "Samba", "QuickStep", "VWSlow", "VienneseWaltz", "WCS", "LineDance"]
+    dances = ["Waltz", "ChaCha", "Foxtrot",
+             "Rumba", "Tango", "Jive", "LineDance"]
     return dances
 
 
@@ -220,12 +212,11 @@ def mediaInfo(player):
     media = player.get_media()
     if media is not None:
         media.parse()
-        genre = media.get_meta(vlc.Meta.Genre) or "Unknown Genre"
         title = media.get_meta(vlc.Meta.Title) or "Unknown song; title"
         artist = media.get_meta(vlc.Meta.Artist) or "Unknown artist"
         album = media.get_meta(vlc.Meta.Album) or "Unknown album"
         try:
-            return "{:<60}  {:<20} {:<20}  {:<20}".format(title,genre,artist,album)
+             return "{:<60}  {:<20}  {:<20}".format(title,artist,album)
         except UnicodeEncodeError: # Python 2 environment
             return "{:<60}  {:<20}  {:<20}".format(title.encode('ascii', 'ignore'),
                                                    artist.encode('ascii', 'ignore'),
@@ -408,11 +399,11 @@ def play_music(theNumSel, offset, theFirstDance, danceMusic):
                 # volume adjustment increased number previously selected for Waltz by 1
                 playlist = playlist[1:]
                 numPlayed = 0
-        elif dance == "PasoDoble": # play at most one Paso Doble
+        elif dance == "PasoDoble":
             numPlayed = theNumSel - 1
-        elif dance in ("VWSlow", "VienneseWaltz", "JSlow", "Jive") and theNumSel > 1:
+        elif dance in ("VWSlow", "VienneseWaltz", "JSlow") and theNumSel > 1:
             numPlayed = theNumSel//2
-        elif dance in ("WCS") and theNumSel > 2:
+        elif dance == "WCS" and theNumSel > 2:
             numPlayed = theNumSel//2
         else:
             numPlayed = 0
@@ -581,7 +572,7 @@ if __name__ == '__main__':
         while True:
             print()
             while True:
-                continueYN = input("Begin another playlist starting with Waltz <Y/N>: ")
+                continueYN = 'Y'
                 continueYN = continueYN.upper().strip()
                 if continueYN not in ('Y', 'N'):
                     print("Unrecognized input.  Try again.")
@@ -592,6 +583,18 @@ if __name__ == '__main__':
                 repetitions = repetitions + 1
                 if repetitions < 2:
                     play_music(numSel, repetitions * numSel, 'W', musicLists)
+                # Line dance played after playlist ends
+                print()
+                flush_input()
+                while True:
+                    continueYN = input("At end of playlist.  Play a line dance <Y/N>: ")
+                    continueYN = continueYN.upper().strip()
+                    if continueYN not in ('Y', 'N'):
+                        print("Unrecognized input.  Try again.")
+                    else:
+                        break
+                if continueYN == 'Y':
+                    play_linedance(musicLists)
                 else:
                     # on 3rd and subsequent passes only play one selection.
                     play_music(1, 2 * numSel + repetitions - 2, 'W', musicLists)
