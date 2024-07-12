@@ -581,7 +581,7 @@ if __name__ == '__main__':
             if continueYN == 'Y':
                 print()
                 repetitions = repetitions + 1
-                if repetitions < 2:
+                if repetitions < 4:
                     play_music(numSel, repetitions * numSel, 'W', musicLists)
                 # Line dance played after playlist ends
                 print()
