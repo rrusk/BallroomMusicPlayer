@@ -55,13 +55,13 @@ for root, dirs, files in os.walk(src):
         m = vlc.Media(song)
         m.parse()
         genre = m.get_meta(vlc.Meta.Genre) or "Unknown Genre"
-        artist = m.get_meta(vlc.Meta.Artist).title() or "Unknown Artist"
-        album = m.get_meta(vlc.Meta.Album).title() or "Unknown Album"
-        title = m.get_meta(vlc.Meta.Title).title() or "Unknown Title"
+        artist = m.get_meta(vlc.Meta.Artist) or "Unknown Artist"
+        album = m.get_meta(vlc.Meta.Album) or "Unknown Album"
+        title = m.get_meta(vlc.Meta.Title) or "Unknown Title"
         if genre == "Unknown Genre" and artist == "Unknown Artist" and album == "Unknown Album" and title == "Unknown Title":
             s = f[0]
         else:
-            s = genre + "-" + album + "_" + title + "_" + artist
+            s = genre + "-" + album.title() + "_" + title.title() + "_" + artist.title()
         s = __removeIllegalChars(s)
         s = s.replace(" ", "")
         s = (s[:255]) if len(s) > 255 else s
