@@ -20,6 +20,7 @@ if len(sys.argv) != 3:
     print("  Musical selections will be copied to a single destination directory with a filename")
     print("  created by concatenating genre, album name, title and artist.")
     print("  Each filename starts with the genre to make it easy to identify files by genre.")
+    print("  NOTE: Colons in the path cause errors extracting the meta information.")
     print()
     exit()
 
@@ -56,8 +57,11 @@ for root, dirs, files in os.walk(src):
         genre = m.get_meta(vlc.Meta.Genre) or "Unknown Genre"
         artist = m.get_meta(vlc.Meta.Artist).title() or "Unknown Artist"
         album = m.get_meta(vlc.Meta.Album).title() or "Unknown Album"
-        title = m.get_meta(vlc.Meta.Title).title() or f[1]
-        s = genre + "-" + album + "_" + title + "_" + artist
+        title = m.get_meta(vlc.Meta.Title).title() or "Unknown Title"
+        if genre == "Unknown Genre" and artist == "Unknown Artist" and album == "Unknown Album" and title == "Unknown Title":
+            s = f[0]
+        else:
+            s = genre + "-" + album + "_" + title + "_" + artist
         s = __removeIllegalChars(s)
         s = s.replace(" ", "")
         s = (s[:255]) if len(s) > 255 else s
